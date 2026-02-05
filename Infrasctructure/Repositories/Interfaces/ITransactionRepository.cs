@@ -4,6 +4,6 @@ namespace MyFinances.Infrasctructure.Repositories.Interfaces
 {
     public interface ITransactionRepository : IRepository<Transaction>
     {
-        Task<IEnumerable<Transaction>> GetAllByUserIdAsync(Guid userId);
+        Task<IEnumerable<Transaction>> GetAllTransactionsAsync(Guid userId, App.Filters.TransactionFilters filters);
     }
 }

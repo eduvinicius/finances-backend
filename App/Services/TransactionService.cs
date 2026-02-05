@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MyFinances.Api.DTOs;
+using MyFinances.App.Filters;
 using MyFinances.App.Services.Interfaces;
 using MyFinances.Domain.Entities;
 using MyFinances.Domain.Enums;
@@ -27,10 +28,27 @@ namespace MyFinances.App.Services
         private readonly ICurrentUserService _currentUserService = currentUserService;
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<TransactionService> _logger = logger;
+
+        public async Task<IEnumerable<Transaction>> GetAllByUserId(TransactionFilters filters)
+        {
+            var userId = _currentUserService.UserId;
+            return await _transactionRepo.GetAllTransactionsAsync(userId, filters);
+        }
+
+        public async Task<Transaction> GetByIdAsync(Guid transactionId)
+        {
+            var userId = _currentUserService.UserId;
+            var transaction = await _transactionRepo.GetByIdAsync(transactionId)
+                ?? throw new NotFoundException("Transaction not found.");
+
+            if (transaction.UserId != userId)
+                throw new ForbiddenException("You do not have permission to access this transaction.");
+            return transaction;
+        }
+
         public async Task<Transaction> CreateAsync(TransactionDto dto)
         {
             var userId = _currentUserService.UserId;
-
             var account = await _accountRepo.GetByIdAsync(dto.AccountId)
              ?? throw new NotFoundException("Account not found.");
 
