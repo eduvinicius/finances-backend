@@ -26,6 +26,8 @@ namespace MyFinances.Infrasctructure.Repositories
                 query = query.Where(t => t.Date <= filters.ToDate.Value);
 
             return await query
+                .Skip(filters.Page)
+                .Take(filters.PageSize)
                 .OrderByDescending(t => t.Date)
                 .ThenByDescending(t => t.CreatedAt)
                 .ToListAsync();
