@@ -203,6 +203,24 @@
         "tags": [
           "Summary"
         ],
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -380,7 +398,7 @@
             "nullable": true
           },
           "type": {
-            "$ref": "#/components/schemas/TransactionType"
+            "$ref": "#/components/schemas/AccountType"
           },
           "balance": {
             "type": "number",
@@ -499,6 +517,14 @@
         "type": "object",
         "properties": {
           "totalBalance": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalIncome": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalExpenses": {
             "type": "number",
             "format": "double"
           },

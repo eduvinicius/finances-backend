@@ -5,6 +5,8 @@ namespace MyFinances.Api.DTOs
     public class SummaryDto
     {
         public decimal TotalBalance { get; set; }
+        public decimal TotalIncome { get; set; }
+        public decimal TotalExpenses { get; set; }
         public IEnumerable<AccountSummaryDto> Accounts { get; set; } = [];
     }
 
@@ -12,7 +14,7 @@ namespace MyFinances.Api.DTOs
     {
         public Guid AccountId { get; set; }
         public string Name { get; set; } = string.Empty;
-        public TransactionType Type { get; set; }
+        public AccountType Type { get; set; }
         public decimal Balance { get; set; }
     }
 }

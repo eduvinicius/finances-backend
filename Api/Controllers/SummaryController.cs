@@ -15,10 +15,10 @@ namespace MyFinances.Api.Controllers
         private readonly ISummaryQuery _summaryQuery = summaryQuery;
 
         [HttpGet]
-        public async Task<ActionResult<SummaryDto>> Get()
+        public async Task<ActionResult<SummaryDto>> Get([FromQuery] DateTime from, [FromQuery] DateTime to)
         {
 
-            var result = await _summaryQuery.GetAllSummariesAsync();
+            var result = await _summaryQuery.GetSummaryAsync(from, to);
 
             return Ok(result);
         }

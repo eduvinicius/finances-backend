@@ -4,6 +4,6 @@ namespace MyFinances.App.Queries.Summary.Interfaces
 {
     public interface ISummaryQuery
     {
-        Task<SummaryDto> GetAllSummariesAsync();
+        Task<SummaryDto> GetSummaryAsync(DateTime from, DateTime to);
     }
 }
