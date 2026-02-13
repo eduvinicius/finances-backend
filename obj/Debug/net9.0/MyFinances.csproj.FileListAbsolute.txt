@@ -285,10 +285,10 @@ C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFin
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\obj\Debug\net9.0\staticwebassets.development.json
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\obj\Debug\net9.0\staticwebassets.build.endpoints.json
-C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\obj\Debug\net9.0\MyFinances.csproj.Up2Date
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\obj\Debug\net9.0\MyFinances.dll
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\obj\Debug\net9.0\refint\MyFinances.dll
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\obj\Debug\net9.0\MyFinances.pdb
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\obj\Debug\net9.0\MyFinances.genruntimeconfig.cache
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\obj\Debug\net9.0\ref\MyFinances.dll
+C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
