@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyFinances.Api.DTOs;
+using MyFinances.App.Filters;
 using MyFinances.App.Services.Interfaces;
 
 namespace MyFinances.Api.Controllers
@@ -18,6 +19,13 @@ namespace MyFinances.Api.Controllers
         {
             var categories = await _categoryService.GetAllAsync();
             return Ok(categories);
+        }
+
+        [HttpGet("paginated")]
+        public async Task<IActionResult> GetPaginatedCategories([FromQuery] CategoryFilters filters)
+        {
+            var paginatedCategories = await _categoryService.GetPaginatedAsync(filters);
+            return Ok(paginatedCategories);
         }
 
         [HttpPost]

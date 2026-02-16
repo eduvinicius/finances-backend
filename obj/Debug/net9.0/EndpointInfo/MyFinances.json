@@ -198,6 +198,66 @@
         }
       }
     },
+    "/api/categories/paginated": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "parameters": [
+          {
+            "name": "Name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Type",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/TransactionType"
+            }
+          },
+          {
+            "name": "FromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "ToDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Summary/summary": {
       "get": {
         "tags": [

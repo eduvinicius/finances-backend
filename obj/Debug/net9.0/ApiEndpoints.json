@@ -116,6 +116,47 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "MyFinances.Api.Controllers.CategoriesController",
+    "Method": "GetPaginatedCategories",
+    "RelativePath": "api/categories/paginated",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "FromDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "ToDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "MyFinances.Api.Controllers.SummaryController",
     "Method": "GetCategoryReport",
     "RelativePath": "api/Summary/category",

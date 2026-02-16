@@ -9,5 +9,6 @@ namespace MyFinances.Domain.Entities
         public string Name { get; set; } = string.Empty;
         public TransactionType Type { get; set; }
         public string Description { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; internal set; }
     }
 }
