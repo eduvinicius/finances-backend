@@ -3,6 +3,8 @@ using MyFinances.App.Filters;
 using MyFinances.Domain.Entities;
 using MyFinances.Infrasctructure.Data;
 using MyFinances.Infrasctructure.Repositories.Interfaces;
+using MyFinances.Domain.Enums;
+using MyFinances.App.Utils;
 
 namespace MyFinances.Infrasctructure.Repositories
 {
@@ -10,16 +12,18 @@ namespace MyFinances.Infrasctructure.Repositories
     {
         public async Task<IEnumerable<Category>> GetPaginatedByUserIdAsync(Guid userId, CategoryFilters filters)
         {
+            var typeEnums = ConvertStringToArrayEnum.Convert(filters.Type);
+
             var query = _context.Categories
                 .Where(c => c.UserId == userId);
-                
 
             if (!string.IsNullOrEmpty(filters.Name))
                 query = query.Where(c => c.Name.Contains(filters.Name));
 
-            if (filters.Type != default)
-                query = query.Where(c => c.Type == filters.Type);
-
+            if (typeEnums.Any())
+            {
+                query = query.Where(c => typeEnums.Contains((int)c.Type));
+            }
 
             if (filters.FromDate.HasValue)
                 query = query.Where(t => t.CreatedAt >= filters.FromDate.Value);

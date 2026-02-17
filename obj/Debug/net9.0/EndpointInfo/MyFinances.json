@@ -215,7 +215,7 @@
             "name": "Type",
             "in": "query",
             "schema": {
-              "$ref": "#/components/schemas/TransactionType"
+              "type": "string"
             }
           },
           {
