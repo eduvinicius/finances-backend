@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using MyFinances.Api.DTOs;
+using MyFinances.App.Filters;
 using MyFinances.App.Services.Interfaces;
+using MyFinances.App.Shared;
 using MyFinances.Domain.Entities;
 using MyFinances.Domain.Enums;
 using MyFinances.Domain.Exceptions;
@@ -23,6 +25,12 @@ namespace MyFinances.App.Services
         {
             var userId = _currentUserService.UserId;
             return await _accountRepo.GetAllByUserIdAsync(userId);
+        }
+
+        public async Task<PagedResultBase<Account>> GetPaginatedAsync(AccountFilters filters)
+        {
+            var userId = _currentUserService.UserId;
+            return await _accountRepo.GetPaginatedByUserIdAsync(userId, filters);
         }
 
         public async Task<Account> GetByIdAsync(Guid id)

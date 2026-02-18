@@ -21,10 +21,8 @@ namespace MyFinances.Infrasctructure.Repositories
             if (!string.IsNullOrEmpty(filters.Name))
                 query = query.Where(c => c.Name.Contains(filters.Name));
 
-            if (typeEnums.Any())
-            {
+            if (typeEnums.Count != 0)
                 query = query.Where(c => typeEnums.Contains((int)c.Type));
-            }
 
             if (filters.FromDate.HasValue)
                 query = query.Where(t => t.CreatedAt >= filters.FromDate.Value);
