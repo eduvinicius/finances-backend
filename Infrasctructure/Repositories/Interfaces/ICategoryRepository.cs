@@ -1,10 +1,11 @@
 using MyFinances.App.Filters;
+using MyFinances.App.Shared;
 using MyFinances.Domain.Entities;
 
 namespace MyFinances.Infrasctructure.Repositories.Interfaces
 {
     public interface ICategoryRepository : IRepository<Category>
     {
-        Task<IEnumerable<Category>> GetPaginatedByUserIdAsync(Guid userId, CategoryFilters filters);
+        Task<PagedResultBase<Category>> GetPaginatedByUserIdAsync(Guid userId, CategoryFilters filters);
     }
 }

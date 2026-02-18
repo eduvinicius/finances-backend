@@ -2,6 +2,7 @@
 using MyFinances.Api.DTOs;
 using MyFinances.App.Filters;
 using MyFinances.App.Services.Interfaces;
+using MyFinances.App.Shared;
 using MyFinances.Domain.Entities;
 using MyFinances.Infrasctructure.Repositories.Interfaces;
 
@@ -25,7 +26,7 @@ namespace MyFinances.App.Services
             return await _categoryRepo.GetAllByUserIdAsync(userId);
         }
 
-        public async Task<IEnumerable<Category>> GetPaginatedAsync(CategoryFilters filters)
+        public async Task<PagedResultBase<Category>> GetPaginatedAsync(CategoryFilters filters)
         {
             var userId = _currentUserService.UserId;
             return await _categoryRepo.GetPaginatedByUserIdAsync(userId, filters);

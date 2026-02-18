@@ -1,5 +1,6 @@
 ﻿using MyFinances.Api.DTOs;
 using MyFinances.App.Filters;
+using MyFinances.App.Shared;
 using MyFinances.Domain.Entities;
 
 namespace MyFinances.App.Services.Interfaces
@@ -8,7 +9,7 @@ namespace MyFinances.App.Services.Interfaces
     {
         Task<IEnumerable<Category>> GetAllAsync();
         Task<Category> CreateAsync(CategoryDto dto);
-        Task<IEnumerable<Category>> GetPaginatedAsync(CategoryFilters filters);
+        Task<PagedResultBase<Category>> GetPaginatedAsync(CategoryFilters filters);
     }
 
 }
