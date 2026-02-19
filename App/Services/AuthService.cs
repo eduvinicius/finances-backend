@@ -17,11 +17,13 @@ namespace MyFinances.App.Services
         IMapper mapper,
         ILogger<AuthService> logger,
         IFileStorageService fileStorageService,
+        ICurrentUserService currentUserService,
         JwtTokenGenerator jwt) : IAuthService
     {
         private readonly IUserRepository _userRepo = userRepo;
         private readonly IUnitOfWork _uow = uow;
         private readonly IMapper _mapper = mapper;
+        private readonly ICurrentUserService _currentUserService = currentUserService;
         private readonly IFileStorageService _fileStorageService = fileStorageService;
         private readonly ILogger<AuthService> _logger = logger;
         private readonly JwtTokenGenerator _jwt = jwt;
@@ -96,6 +98,19 @@ namespace MyFinances.App.Services
 
             await _userRepo.UpdateAsync(user);
             return imageUrl;
+        }
+
+        public async Task<User> UpdateUserAsync(UserDto user)
+        {
+            var userId = _currentUserService.UserId;
+
+            var existingUser = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("User not found");
+
+            _mapper.Map(user, existingUser);
+
+            await _userRepo.UpdateAsync(existingUser);
+
+            return existingUser;
         }
 
     }

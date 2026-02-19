@@ -37,5 +37,13 @@ namespace MyFinances.Api.Controllers
 
             return Ok(new { imageUrl });
         }
+
+        [Authorize]
+        [HttpPost("edit-profile")]
+        public async Task<IActionResult> EditProfile(UserDto user)
+        {
+            var updatedUser = await _authService.UpdateUserAsync(user);
+            return Ok(updatedUser);
+        }
     }
 }
