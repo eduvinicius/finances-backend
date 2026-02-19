@@ -6,7 +6,7 @@
 
         Task<IEnumerable<T>> GetAllByUserIdAsync(Guid userId);
         Task<T?> GetByIdAsync(Guid id);
-        void Update(T entity);
+        Task UpdateAsync(T entity);
         void Delete(T entity);
         Task SaveChangesAsync();
     }

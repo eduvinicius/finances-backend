@@ -81,7 +81,7 @@ namespace MyFinances.App.Services
                 await _transactionRepo.AddAsync(transaction);
 
                 account.Balance += dto.Amount;
-                _accountRepo.Update(account);
+                await _accountRepo.UpdateAsync(account);
 
                 await _unitOfWork.CommitAsync();
                 return transaction;

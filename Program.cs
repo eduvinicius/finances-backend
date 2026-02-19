@@ -1,9 +1,11 @@
+using System.Net.Http.Headers;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyFinances.Api.Mapping;
 using MyFinances.Api.Middleware;
+using MyFinances.App.Abstractions;
 using MyFinances.App.Queries.CategoryReport;
 using MyFinances.App.Queries.Interfaces;
 using MyFinances.App.Queries.Summary;
@@ -13,6 +15,7 @@ using MyFinances.Infrasctructure.Data;
 using MyFinances.Infrasctructure.Repositories;
 using MyFinances.Infrasctructure.Repositories.Interfaces;
 using MyFinances.Infrasctructure.Security;
+using MyFinances.Infrasctructure.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -160,7 +163,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-
 // ============================================
 // SERVICES
 // ============================================
@@ -173,6 +175,7 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IFileStorageService, SupabaseStorageService>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
@@ -180,9 +183,22 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ISummaryQuery, SummaryQuery>();
 builder.Services.AddScoped<ICategoryReport, CategoryReport>();
+builder.Services.AddHttpClient<IFileStorageService, SupabaseStorageService>((provider, client) =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+
+    var supabaseUrl = configuration["Supabase:Url"];
+    var serviceKey = configuration["Supabase:ServiceKey"];
+
+    client.BaseAddress = new Uri(supabaseUrl ?? throw new InvalidOperationException("Supabase URL is not configured."));
+
+    client.DefaultRequestHeaders.Add("apikey", serviceKey);
+
+    client.DefaultRequestHeaders.Authorization =
+        new AuthenticationHeaderValue("Bearer", serviceKey);
+});
 
 var app = builder.Build();
-
 
 // ============================================
 // MIDDLEWARE PIPELINE (ORDEM IMPORTA!)

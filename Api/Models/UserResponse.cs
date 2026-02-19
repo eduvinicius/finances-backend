@@ -5,7 +5,7 @@
         public string FullName { get; set; } = null!;
         public string? NickName { get; set; }
         public string Token { get; set; } = string.Empty;
-        public Guid UserId { get; set; } = Guid.Empty;
+        public string ProfileImageUrl { get; set; } = string.Empty;
 
     }
 }

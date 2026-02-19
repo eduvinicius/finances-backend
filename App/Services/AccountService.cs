@@ -64,7 +64,7 @@ namespace MyFinances.App.Services
             var account = await GetByIdAsync(id);
 
             account.IsActive = false;
-            _accountRepo.Update(account);
+            await _accountRepo.UpdateAsync(account);
 
             await _unitOfWork.SaveChangesAsync();
         }

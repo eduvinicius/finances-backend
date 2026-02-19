@@ -6,6 +6,7 @@
         public string Email { get; set; } = null!;
         public string FullName { get; set; } = null!;
         public string? Nickname { get; set; }
+        public string? ProfileImageUrl { get; set; }
         public string DocumentNumber { get; set; } = null!;
         public string? PhoneNumber { get; set; }
         public string? Address { get; set; }

@@ -1,11 +1,13 @@
-﻿using MyFinances.Api.DTOs;
+﻿using AutoMapper;
+using MyFinances.Api.DTOs;
+using MyFinances.Api.Models;
+using MyFinances.App.Abstractions;
 using MyFinances.App.Services.Interfaces;
 using MyFinances.Domain.Entities;
-using MyFinances.Infrasctructure.Repositories.Interfaces;
-using AutoMapper;
-using MyFinances.Infrasctructure.Security;
 using MyFinances.Domain.Exceptions;
-using MyFinances.Api.Models;
+using MyFinances.Infrasctructure.Repositories;
+using MyFinances.Infrasctructure.Repositories.Interfaces;
+using MyFinances.Infrasctructure.Security;
 
 namespace MyFinances.App.Services
 {
@@ -14,11 +16,13 @@ namespace MyFinances.App.Services
         IUnitOfWork uow,
         IMapper mapper,
         ILogger<AuthService> logger,
+        IFileStorageService fileStorageService,
         JwtTokenGenerator jwt) : IAuthService
     {
         private readonly IUserRepository _userRepo = userRepo;
         private readonly IUnitOfWork _uow = uow;
         private readonly IMapper _mapper = mapper;
+        private readonly IFileStorageService _fileStorageService = fileStorageService;
         private readonly ILogger<AuthService> _logger = logger;
         private readonly JwtTokenGenerator _jwt = jwt;
 
@@ -57,14 +61,42 @@ namespace MyFinances.App.Services
             _logger.LogInformation("User {UserId} logged in successfully", user.Id);
 
             var response = new UserResponse
-            {
+            { 
                 FullName = user.FullName,
                 NickName = user.Nickname,
                 Token = token,
-                UserId = user.Id
+                ProfileImageUrl = user.ProfileImageUrl ?? ""
             };
 
             return response;
         }
+
+        public async Task<string> UploadProfileImageAsync(Guid userId, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                throw new Exception("Invalid file");
+
+            if (!file.ContentType.StartsWith("image/"))
+                throw new Exception("Only images allowed");
+
+            if (file.Length > 5 * 1024 * 1024)
+                throw new Exception("Max 5MB");
+
+            var fileName = $"{userId}-{Guid.NewGuid()}";
+
+            using var stream = file.OpenReadStream();
+
+            var imageUrl = await _fileStorageService.UploadAsync(
+                fileName,
+                stream,
+                file.ContentType);
+
+            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("User not found");
+            user.ProfileImageUrl = imageUrl;
+
+            await _userRepo.UpdateAsync(user);
+            return imageUrl;
+        }
+
     }
 }

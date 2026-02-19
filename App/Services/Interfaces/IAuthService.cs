@@ -7,5 +7,6 @@ namespace MyFinances.App.Services.Interfaces
     {
         Task RegisterAsync(RegisterDto dto);
         Task<UserResponse> LoginAsync(LoginDto dto);
+        Task<string> UploadProfileImageAsync(Guid userId, IFormFile file);
     }
 }
