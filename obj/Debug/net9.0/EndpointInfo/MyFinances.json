@@ -155,6 +155,18 @@
         }
       }
     },
+    "/api/auth": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/auth/register": {
       "post": {
         "tags": [
@@ -238,6 +250,37 @@
                 "file": {
                   "style": "form"
                 }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/auth/edit-profile": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDto"
               }
             }
           }
@@ -659,18 +702,30 @@
       },
       "RegisterDto": {
         "required": [
+          "birthDate",
+          "country",
           "documentNumber",
           "email",
           "fullName",
+          "nickname",
           "password"
         ],
         "type": "object",
         "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
           "fullName": {
             "minLength": 1,
             "type": "string"
           },
           "nickname": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "profileImageUrl": {
             "type": "string",
             "nullable": true
           },
@@ -699,22 +754,20 @@
             "nullable": true
           },
           "country": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
             "minLength": 1,
+            "type": "string"
+          },
+          "birthDate": {
             "type": "string",
-            "format": "email"
+            "format": "date-time"
+          },
+          "lastUpdatedAt": {
+            "type": "string",
+            "format": "date-time"
           },
           "password": {
             "minLength": 6,
             "type": "string"
-          },
-          "age": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -781,6 +834,73 @@
         ],
         "type": "integer",
         "format": "int32"
+      },
+      "UserDto": {
+        "required": [
+          "birthDate",
+          "country",
+          "documentNumber",
+          "email",
+          "fullName",
+          "nickname"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "fullName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "nickname": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "profileImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "documentNumber": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "postalCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastUpdatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
       }
     },
     "securitySchemes": {

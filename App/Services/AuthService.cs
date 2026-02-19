@@ -5,7 +5,6 @@ using MyFinances.App.Abstractions;
 using MyFinances.App.Services.Interfaces;
 using MyFinances.Domain.Entities;
 using MyFinances.Domain.Exceptions;
-using MyFinances.Infrasctructure.Repositories;
 using MyFinances.Infrasctructure.Repositories.Interfaces;
 using MyFinances.Infrasctructure.Security;
 
@@ -17,16 +16,22 @@ namespace MyFinances.App.Services
         IMapper mapper,
         ILogger<AuthService> logger,
         IFileStorageService fileStorageService,
-        ICurrentUserService currentUserService,
         JwtTokenGenerator jwt) : IAuthService
     {
         private readonly IUserRepository _userRepo = userRepo;
         private readonly IUnitOfWork _uow = uow;
         private readonly IMapper _mapper = mapper;
-        private readonly ICurrentUserService _currentUserService = currentUserService;
         private readonly IFileStorageService _fileStorageService = fileStorageService;
         private readonly ILogger<AuthService> _logger = logger;
         private readonly JwtTokenGenerator _jwt = jwt;
+
+        public async Task<UserDto> GetUserByIdAsync(Guid id)
+        {
+            var user = await _userRepo.GetByIdAsync(id) ?? throw new NotFoundException("User not found");
+            var userDto = _mapper.Map<UserDto>(user);
+
+            return userDto;
+        }
 
         public async Task RegisterAsync(RegisterDto dto)
         {
@@ -100,9 +105,8 @@ namespace MyFinances.App.Services
             return imageUrl;
         }
 
-        public async Task<User> UpdateUserAsync(UserDto user)
+        public async Task<User> UpdateUserAsync(Guid userId, UserDto user)
         {
-            var userId = _currentUserService.UserId;
 
             var existingUser = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("User not found");
 

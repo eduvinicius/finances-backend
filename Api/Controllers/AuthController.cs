@@ -12,6 +12,16 @@ namespace MyFinances.Api.Controllers
         private readonly IAuthService _authService = authService;
         private readonly ICurrentUserService _currentUserService = currentUserService;
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var userId = _currentUserService.UserId;
+            var user = await _authService.GetUserByIdAsync(userId);
+
+            return Ok(user);
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
@@ -42,7 +52,8 @@ namespace MyFinances.Api.Controllers
         [HttpPost("edit-profile")]
         public async Task<IActionResult> EditProfile(UserDto user)
         {
-            var updatedUser = await _authService.UpdateUserAsync(user);
+            var userId = _currentUserService.UserId;
+            var updatedUser = await _authService.UpdateUserAsync(userId, user);
             return Ok(updatedUser);
         }
     }

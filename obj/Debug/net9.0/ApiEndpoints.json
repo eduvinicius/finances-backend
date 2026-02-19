@@ -100,6 +100,32 @@
   },
   {
     "ContainingType": "MyFinances.Api.Controllers.AuthController",
+    "Method": "GetCurrentUser",
+    "RelativePath": "api/auth",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyFinances.Api.Controllers.AuthController",
+    "Method": "EditProfile",
+    "RelativePath": "api/auth/edit-profile",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "user",
+        "Type": "MyFinances.Api.DTOs.UserDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyFinances.Api.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/auth/login",
     "HttpMethod": "POST",

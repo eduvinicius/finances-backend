@@ -6,9 +6,10 @@ namespace MyFinances.App.Services.Interfaces
 {
     public interface IAuthService
     {
+        Task<UserDto> GetUserByIdAsync(Guid userId);
         Task RegisterAsync(RegisterDto dto);
         Task<UserResponse> LoginAsync(LoginDto dto);
         Task<string> UploadProfileImageAsync(Guid userId, IFormFile file);
-        Task<User> UpdateUserAsync(UserDto user);
+        Task<User> UpdateUserAsync(Guid id, UserDto user);
     }
 }
