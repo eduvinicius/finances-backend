@@ -12,7 +12,7 @@ namespace MyFinances.Api.Controllers
         private readonly IAuthService _authService = authService;
         private readonly ICurrentUserService _currentUserService = currentUserService;
 
-        [HttpGet]
+        [HttpGet("current-user")]
         [Authorize]
         public async Task<IActionResult> GetCurrentUser()
         {
