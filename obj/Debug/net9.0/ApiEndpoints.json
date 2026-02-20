@@ -101,7 +101,7 @@
   {
     "ContainingType": "MyFinances.Api.Controllers.AuthController",
     "Method": "GetCurrentUser",
-    "RelativePath": "api/auth",
+    "RelativePath": "api/auth/current-user",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
