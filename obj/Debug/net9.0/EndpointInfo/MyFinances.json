@@ -229,7 +229,7 @@
         }
       }
     },
-    "/api/auth/profile-image": {
+    "/api/auth/update-profile-image": {
       "post": {
         "tags": [
           "Auth"
@@ -261,8 +261,8 @@
         }
       }
     },
-    "/api/auth/edit-profile": {
-      "post": {
+    "/api/auth/update-user": {
+      "put": {
         "tags": [
           "Auth"
         ],
@@ -270,21 +270,33 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserDto"
+                "$ref": "#/components/schemas/UpdateUserDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserDto"
+                "$ref": "#/components/schemas/UpdateUserDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/UserDto"
+                "$ref": "#/components/schemas/UpdateUserDto"
               }
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/auth/profile-image": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -835,7 +847,7 @@
         "type": "integer",
         "format": "int32"
       },
-      "UserDto": {
+      "UpdateUserDto": {
         "required": [
           "birthDate",
           "country",
@@ -858,10 +870,6 @@
           "nickname": {
             "minLength": 1,
             "type": "string"
-          },
-          "profileImageUrl": {
-            "type": "string",
-            "nullable": true
           },
           "documentNumber": {
             "minLength": 1,
@@ -892,10 +900,6 @@
             "type": "string"
           },
           "birthDate": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "lastUpdatedAt": {
             "type": "string",
             "format": "date-time"
           }

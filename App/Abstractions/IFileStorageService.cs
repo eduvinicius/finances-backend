@@ -6,6 +6,10 @@
             string fileName,
             Stream fileStream,
             string contentType);
+
+        Task<Stream> DownloadAsync(string fileName);
+
+        Task DeleteAsync(string fileName);
     }
 
 }

@@ -110,22 +110,6 @@
   },
   {
     "ContainingType": "MyFinances.Api.Controllers.AuthController",
-    "Method": "EditProfile",
-    "RelativePath": "api/auth/edit-profile",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "user",
-        "Type": "MyFinances.Api.DTOs.UserDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "MyFinances.Api.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/auth/login",
     "HttpMethod": "POST",
@@ -142,8 +126,34 @@
   },
   {
     "ContainingType": "MyFinances.Api.Controllers.AuthController",
-    "Method": "UploadProfileImage",
+    "Method": "GetProfileImage",
     "RelativePath": "api/auth/profile-image",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyFinances.Api.Controllers.AuthController",
+    "Method": "Register",
+    "RelativePath": "api/auth/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "MyFinances.Api.DTOs.RegisterDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyFinances.Api.Controllers.AuthController",
+    "Method": "UploadProfileImage",
+    "RelativePath": "api/auth/update-profile-image",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -158,15 +168,15 @@
   },
   {
     "ContainingType": "MyFinances.Api.Controllers.AuthController",
-    "Method": "Register",
-    "RelativePath": "api/auth/register",
-    "HttpMethod": "POST",
+    "Method": "EditProfile",
+    "RelativePath": "api/auth/update-user",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
-        "Type": "MyFinances.Api.DTOs.RegisterDto",
+        "Name": "user",
+        "Type": "MyFinances.Api.DTOs.UpdateUserDto",
         "IsRequired": true
       }
     ],

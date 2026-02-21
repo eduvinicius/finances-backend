@@ -8,8 +8,9 @@ namespace MyFinances.App.Services.Interfaces
     {
         Task<UserDto> GetUserByIdAsync(Guid userId);
         Task RegisterAsync(RegisterDto dto);
-        Task<UserResponse> LoginAsync(LoginDto dto);
+        Task<string> LoginAsync(LoginDto dto);
         Task<string> UploadProfileImageAsync(Guid userId, IFormFile file);
-        Task<User> UpdateUserAsync(Guid id, UserDto user);
+        Task<User> UpdateUserAsync(Guid id, UpdateUserDto user);
+        Task<Stream> GetProfileImageAsync(Guid userId);
     }
 }

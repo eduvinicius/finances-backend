@@ -7,6 +7,7 @@ using MyFinances.Domain.Entities;
 using MyFinances.Domain.Exceptions;
 using MyFinances.Infrasctructure.Repositories.Interfaces;
 using MyFinances.Infrasctructure.Security;
+using UpdateUserDto = MyFinances.Api.DTOs.UpdateUserDto;
 
 namespace MyFinances.App.Services
 {
@@ -51,7 +52,7 @@ namespace MyFinances.App.Services
             _logger.LogInformation("User {UserId} registered successfully with email: {Email}", user.Id, dto.Email);
         }
 
-        public async Task<UserResponse> LoginAsync(LoginDto dto)
+        public async Task<string> LoginAsync(LoginDto dto)
         {
             _logger.LogInformation("Login attempt for email: {Email}", dto.Email);
 
@@ -67,15 +68,7 @@ namespace MyFinances.App.Services
             var token = _jwt.GenerateToken(user);
             _logger.LogInformation("User {UserId} logged in successfully", user.Id);
 
-            var response = new UserResponse
-            { 
-                FullName = user.FullName,
-                NickName = user.Nickname,
-                Token = token,
-                ProfileImageUrl = user.ProfileImageUrl ?? ""
-            };
-
-            return response;
+            return token;
         }
 
         public async Task<string> UploadProfileImageAsync(Guid userId, IFormFile file)
@@ -89,6 +82,24 @@ namespace MyFinances.App.Services
             if (file.Length > 5 * 1024 * 1024)
                 throw new Exception("Max 5MB");
 
+            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("User not found");
+
+            // Delete old profile image if it exists
+            if (!string.IsNullOrEmpty(user.ProfileImageUrl))
+            {
+                try
+                {
+                    var uri = new Uri(user.ProfileImageUrl);
+                    var oldFileName = uri.Segments.Last();
+                    await _fileStorageService.DeleteAsync(oldFileName);
+                    _logger.LogInformation("Old profile image deleted for user {UserId}", userId);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to delete old profile image for user {UserId}", userId);
+                }
+            }
+
             var fileName = $"{userId}-{Guid.NewGuid()}";
 
             using var stream = file.OpenReadStream();
@@ -98,14 +109,17 @@ namespace MyFinances.App.Services
                 stream,
                 file.ContentType);
 
-            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("User not found");
             user.ProfileImageUrl = imageUrl;
 
             await _userRepo.UpdateAsync(user);
+            await _uow.SaveChangesAsync();
+
+            _logger.LogInformation("Profile image uploaded successfully for user {UserId}", userId);
+
             return imageUrl;
         }
 
-        public async Task<User> UpdateUserAsync(Guid userId, UserDto user)
+        public async Task<User> UpdateUserAsync(Guid userId, UpdateUserDto user)
         {
 
             var existingUser = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("User not found");
@@ -115,6 +129,21 @@ namespace MyFinances.App.Services
             await _userRepo.UpdateAsync(existingUser);
 
             return existingUser;
+        }
+
+        public async Task<Stream> GetProfileImageAsync(Guid userId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("User not found");
+
+            if (string.IsNullOrEmpty(user.ProfileImageUrl))
+                throw new NotFoundException("Profile image not found");
+
+            // Extract filename from the full URL
+            // URL format: https://mzzvhtvojiqbvhitkcbw.supabase.co/storage/v1/object/public/ProfileImage/{fileName}
+            var uri = new Uri(user.ProfileImageUrl);
+            var fileName = uri.Segments.Last();
+
+            return await _fileStorageService.DownloadAsync(fileName);
         }
 
     }

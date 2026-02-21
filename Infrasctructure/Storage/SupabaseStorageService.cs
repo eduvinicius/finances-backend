@@ -26,5 +26,25 @@ namespace MyFinances.Infrasctructure.Storage
 
             return $"https://mzzvhtvojiqbvhitkcbw.supabase.co/storage/v1/object/public/{_bucketName}/{fileName}";
         }
+
+        public async Task<Stream> DownloadAsync(string fileName)
+        {
+            var response = await _httpClient.GetAsync(
+                $"storage/v1/object/public/{_bucketName}/{fileName}");
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsStreamAsync();
+        }
+
+        public async Task DeleteAsync(string fileName)
+        {
+            var response = await _httpClient.DeleteAsync(
+                $"storage/v1/object/{_bucketName}/{fileName}");
+
+            response.EnsureSuccessStatusCode();
+        }
     }
 }
+
+

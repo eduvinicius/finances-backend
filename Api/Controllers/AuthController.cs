@@ -32,12 +32,12 @@ namespace MyFinances.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {
-            var userResponse = await _authService.LoginAsync(dto);
-            return Ok(userResponse);
+            var token = await _authService.LoginAsync(dto);
+            return Ok(token);
         }
 
         [Authorize]
-        [HttpPost("profile-image")]
+        [HttpPost("update-profile-image")]
         public async Task<IActionResult> UploadProfileImage(IFormFile file)
         {
             var userId = _currentUserService.UserId;
@@ -49,12 +49,22 @@ namespace MyFinances.Api.Controllers
         }
 
         [Authorize]
-        [HttpPost("edit-profile")]
-        public async Task<IActionResult> EditProfile(UserDto user)
+        [HttpPut("update-user")]
+        public async Task<IActionResult> EditProfile(UpdateUserDto user)
         {
             var userId = _currentUserService.UserId;
             var updatedUser = await _authService.UpdateUserAsync(userId, user);
             return Ok(updatedUser);
+        }
+
+        [Authorize]
+        [HttpGet("profile-image")]
+        public async Task<IActionResult> GetProfileImage()
+        {
+            var userId = _currentUserService.UserId;
+            var imageStream = await _authService.GetProfileImageAsync(userId);
+
+            return File(imageStream, "image/jpeg", enableRangeProcessing: true);
         }
     }
 }
