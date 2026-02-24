@@ -32,6 +32,8 @@ namespace MyFinances.Api.Mapping
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
 
+            CreateMap<Transaction, TransactionResponseDto>();
+
             CreateMap<CategoryDto, Category>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));

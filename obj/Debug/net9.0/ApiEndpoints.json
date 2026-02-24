@@ -319,19 +319,24 @@
   {
     "ContainingType": "MyFinances.Api.Controllers.TransactionController",
     "Method": "GetTransactions",
-    "RelativePath": "api/transaction",
+    "RelativePath": "api/transactions",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "AccountId",
-        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Collections.Generic.List\u00601[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
       },
       {
         "Name": "CategoryId",
-        "Type": "System.Nullable\u00601[[System.Guid, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "Type": "System.Collections.Generic.List\u00601[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Type",
+        "Type": "System.String",
         "IsRequired": false
       },
       {
@@ -360,7 +365,7 @@
   {
     "ContainingType": "MyFinances.Api.Controllers.TransactionController",
     "Method": "CreateTransaction",
-    "RelativePath": "api/transaction",
+    "RelativePath": "api/transactions",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -376,7 +381,7 @@
   {
     "ContainingType": "MyFinances.Api.Controllers.TransactionController",
     "Method": "GetTransaction",
-    "RelativePath": "api/transaction/{id}",
+    "RelativePath": "api/transactions/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

@@ -506,7 +506,7 @@
         }
       }
     },
-    "/api/transaction": {
+    "/api/transactions": {
       "get": {
         "tags": [
           "Transaction"
@@ -516,16 +516,27 @@
             "name": "AccountId",
             "in": "query",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           },
           {
             "name": "CategoryId",
             "in": "query",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "Type",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           },
           {
@@ -597,7 +608,7 @@
         }
       }
     },
-    "/api/transaction/{id}": {
+    "/api/transactions/{id}": {
       "get": {
         "tags": [
           "Transaction"

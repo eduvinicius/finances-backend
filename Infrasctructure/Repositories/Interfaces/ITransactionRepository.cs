@@ -1,9 +1,10 @@
-﻿using MyFinances.Domain.Entities;
+﻿using MyFinances.App.Shared;
+using MyFinances.Domain.Entities;
 
 namespace MyFinances.Infrasctructure.Repositories.Interfaces
 {
     public interface ITransactionRepository : IRepository<Transaction>
     {
-        Task<IEnumerable<Transaction>> GetAllTransactionsAsync(Guid userId, App.Filters.TransactionFilters filters);
+        Task<PagedResultBase<Transaction>> GetAllTransactionsAsync(Guid userId, App.Filters.TransactionFilters filters);
     }
 }

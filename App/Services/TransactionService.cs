@@ -2,6 +2,7 @@
 using MyFinances.Api.DTOs;
 using MyFinances.App.Filters;
 using MyFinances.App.Services.Interfaces;
+using MyFinances.App.Shared;
 using MyFinances.Domain.Entities;
 using MyFinances.Domain.Enums;
 using MyFinances.Domain.Exceptions;
@@ -29,13 +30,22 @@ namespace MyFinances.App.Services
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<TransactionService> _logger = logger;
 
-        public async Task<IEnumerable<Transaction>> GetAllByUserId(TransactionFilters filters)
+        public async Task<PagedResultBase<TransactionResponseDto>> GetAllByUserId(TransactionFilters filters)
         {
             var userId = _currentUserService.UserId;
-            return await _transactionRepo.GetAllTransactionsAsync(userId, filters);
+            var transactions = await _transactionRepo.GetAllTransactionsAsync(userId, filters);
+            var transactionsMapped = _mapper.Map<IEnumerable<TransactionResponseDto>>(transactions.Items);
+
+            var transactionResponse = new PagedResultBase<TransactionResponseDto>
+            {
+                Items = (IReadOnlyCollection<TransactionResponseDto>)transactionsMapped,
+                TotalCount = transactions.TotalCount,
+            };
+
+            return transactionResponse;
         }
 
-        public async Task<Transaction> GetByIdAsync(Guid transactionId)
+        public async Task<TransactionResponseDto> GetByIdAsync(Guid transactionId)
         {
             var userId = _currentUserService.UserId;
             var transaction = await _transactionRepo.GetByIdAsync(transactionId)
@@ -43,7 +53,10 @@ namespace MyFinances.App.Services
 
             if (transaction.UserId != userId)
                 throw new ForbiddenException("You do not have permission to access this transaction.");
-            return transaction;
+
+            var transactionMapped = _mapper.Map<TransactionResponseDto>(transaction);
+
+            return transactionMapped;
         }
 
         public async Task<Transaction> CreateAsync(TransactionDto dto)

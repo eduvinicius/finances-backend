@@ -7,14 +7,14 @@ using MyFinances.App.Services.Interfaces;
 namespace MyFinances.Api.Controllers
 {
     [ApiController]
-    [Route("api/transaction")]
+    [Route("api/transactions")]
     [Authorize]
     public class TransactionController(ITransactionService transactionService) : ControllerBase
     {
         private readonly ITransactionService _transactionService = transactionService;
 
-        [HttpGet]
-        public async Task<IActionResult> GetTransactions([FromQuery] TransactionFilters filters)
+        [HttpPost("getAll")]
+        public async Task<IActionResult> GetTransactions([FromBody] TransactionFilters filters)
         {
             var transactions = await _transactionService.GetAllByUserId(filters);
             return Ok(transactions);
