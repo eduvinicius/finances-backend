@@ -77,7 +77,7 @@ namespace MyFinances.App.Services
             if (category.UserId != userId)
                 throw new ForbiddenException("You do not have permission to access this category.");
 
-            ValidateAmount(dto.Amount, category.Type);
+            dto.Amount = ValidateAmount(dto.Amount, category.Type);
 
             if (dto.Date > DateTime.UtcNow.Date)
                 throw new BadRequestException("Transaction date cannot be in the future.");
@@ -107,17 +107,20 @@ namespace MyFinances.App.Services
             }
         }
 
-        private static void ValidateAmount(decimal amount, TransactionType type)
+        private static decimal ValidateAmount(decimal amount, TransactionType type)
         {
             if (type == TransactionType.Expense && amount > 0)
             {
-                throw new BadRequestException("Amount must be negative for expenses.");
+                var negativeAmount = -amount;
+                return negativeAmount;
             }
 
            if ((type == TransactionType.Income || type == TransactionType.Investment) && amount < 0)
             {
                 throw new BadRequestException("Amount must be positive for incomes and investments.");
             }
+
+            return amount;
         }
 
         private static void ValidateBalance(Account account, decimal amount)

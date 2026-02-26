@@ -15,7 +15,7 @@ namespace MyFinances.Infrasctructure.Repositories
 
             var typeEnums = ConvertStringToArrayEnum.Convert(filters.Type);
 
-            var query = WithIncludes()
+            var query = _context.Transactions
                 .Where(t => t.UserId == userId);
 
             if (filters.AccountId.Count != 0)
@@ -36,10 +36,9 @@ namespace MyFinances.Infrasctructure.Repositories
             var totalCount = await query.CountAsync();
 
             var items =  await query
-                .Skip(filters.Page)
+                .AsNoTracking()
+                .Skip((filters.Page - 1) * filters.PageSize)
                 .Take(filters.PageSize)
-                .OrderByDescending(t => t.Date)
-                .ThenByDescending(t => t.CreatedAt)
                 .Include(t => t.Account)
                 .Include(t => t.Category)
                 .ToListAsync();

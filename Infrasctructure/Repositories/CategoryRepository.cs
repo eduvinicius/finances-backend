@@ -3,7 +3,6 @@ using MyFinances.App.Filters;
 using MyFinances.Domain.Entities;
 using MyFinances.Infrasctructure.Data;
 using MyFinances.Infrasctructure.Repositories.Interfaces;
-using MyFinances.Domain.Enums;
 using MyFinances.App.Utils;
 using MyFinances.App.Shared;
 
