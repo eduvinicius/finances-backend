@@ -13,19 +13,17 @@ namespace MyFinances.Infrasctructure.Repositories
         public async Task<PagedResultBase<Transaction>> GetAllTransactionsAsync(Guid userId, TransactionFilters filters)
         {
 
-            var typeEnums = ConvertStringToArrayEnum.Convert(filters.Type);
-
             var query = _context.Transactions
                 .Where(t => t.UserId == userId);
 
-            if (filters.AccountId.Count != 0)
-                query = query.Where(t => filters.AccountId.Contains(t.AccountId.ToString()));
+            if (filters.AccountIds.Count != 0)
+                query = query.Where(t => filters.AccountIds.Contains(t.AccountId.ToString()));
 
-            if (filters.CategoryId.Count != 0)
-                query = query.Where(t => filters.CategoryId.Contains(t.CategoryId.ToString()));
+            if (filters.CategoryIds.Count != 0)
+                query = query.Where(t => filters.CategoryIds.Contains(t.CategoryId.ToString()));
 
-            if (typeEnums.Count != 0)
-                query = query.Where(c => typeEnums.Contains((int)c.Type));
+            if (filters.Type.Count != 0)
+                query = query.Where(c => filters.Type.Contains((int)c.Type));
 
             if (filters.FromDate.HasValue)
                 query = query.Where(t => t.Date >= filters.FromDate.Value);

@@ -820,14 +820,14 @@
             "type": "integer",
             "format": "int32"
           },
-          "accountId": {
+          "accountIds": {
             "type": "array",
             "items": {
               "type": "string"
             },
             "nullable": true
           },
-          "categoryId": {
+          "categoryIds": {
             "type": "array",
             "items": {
               "type": "string"
@@ -835,7 +835,11 @@
             "nullable": true
           },
           "type": {
-            "type": "string",
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            },
             "nullable": true
           },
           "fromDate": {
