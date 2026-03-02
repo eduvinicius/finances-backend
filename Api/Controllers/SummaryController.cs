@@ -9,7 +9,7 @@ using MyFinances.Domain.Enums;
 namespace MyFinances.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api")]
     [Authorize]
     public class SummaryController(
         ISummaryQuery summaryQuery,

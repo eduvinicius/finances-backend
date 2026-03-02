@@ -54,7 +54,7 @@ namespace MyFinances.App.Queries.Summary
 
             var aggregates = await _context.Transactions
                 .AsNoTracking()
-                .Where(t => t.UserId == userId && t.Date >= start && t.Date <= end)
+                .Where(t => t.UserId == userId && t.CreatedAt >= start && t.CreatedAt < end)
                 .GroupBy(_ => 1)
                 .Select(g => new
                 {
