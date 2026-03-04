@@ -9,7 +9,7 @@ using MyFinances.Domain.Enums;
 namespace MyFinances.Api.Controllers
 {
     [ApiController]
-    [Route("api")]
+    [Route("api/[controller]")]
     [Authorize]
     public class SummaryController(
         ISummaryQuery summaryQuery,
@@ -19,7 +19,7 @@ namespace MyFinances.Api.Controllers
         private readonly ISummaryQuery _summaryQuery = summaryQuery;
         private readonly ICategoryReport _categoryReport = categoryReport;
 
-        [HttpGet("summary")]
+        [HttpGet]
         public async Task<ActionResult<SummaryDto>> GetSummary([FromQuery] DateTime from, [FromQuery] DateTime to)
         {
 

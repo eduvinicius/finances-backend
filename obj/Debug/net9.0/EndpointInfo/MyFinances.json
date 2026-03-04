@@ -405,7 +405,7 @@
         }
       }
     },
-    "/api/summary": {
+    "/api/Summary": {
       "get": {
         "tags": [
           "Summary"
@@ -452,7 +452,7 @@
         }
       }
     },
-    "/api/category": {
+    "/api/Summary/category": {
       "get": {
         "tags": [
           "Summary"

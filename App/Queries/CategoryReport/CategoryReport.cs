@@ -27,8 +27,8 @@ namespace MyFinances.App.Queries.CategoryReport
                 .AsNoTracking()
                 .Where(t => 
                     t.UserId == userId && 
-                    t.Date >= start && 
-                    t.Date <= end && 
+                    t.CreatedAt >= start && 
+                    t.CreatedAt <= end && 
                     t.Type == transactionType
                 )
                 .GroupBy(t => new

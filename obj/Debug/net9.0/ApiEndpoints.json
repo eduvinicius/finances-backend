@@ -251,8 +251,39 @@
   },
   {
     "ContainingType": "MyFinances.Api.Controllers.SummaryController",
+    "Method": "GetSummary",
+    "RelativePath": "api/Summary",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "from",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyFinances.Api.DTOs.SummaryDto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyFinances.Api.Controllers.SummaryController",
     "Method": "GetCategoryReport",
-    "RelativePath": "api/category",
+    "RelativePath": "api/Summary/category",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -276,37 +307,6 @@
     "ReturnTypes": [
       {
         "Type": "MyFinances.Api.DTOs.CategoryDto",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "MyFinances.Api.Controllers.SummaryController",
-    "Method": "GetSummary",
-    "RelativePath": "api/summary",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "from",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      },
-      {
-        "Name": "to",
-        "Type": "System.DateTime",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "MyFinances.Api.DTOs.SummaryDto",
         "MediaTypes": [
           "text/plain",
           "application/json",
