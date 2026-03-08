@@ -113,7 +113,7 @@ namespace MyFinances.App.Services
             return imageUrl;
         }
 
-        public async Task<User> UpdateUserAsync(Guid userId, UpdateUserDto user)
+        public async Task<UserResponseDto> UpdateUserAsync(Guid userId, UpdateUserDto user)
         {
 
             var existingUser = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("User not found");
@@ -121,8 +121,9 @@ namespace MyFinances.App.Services
             _mapper.Map(user, existingUser);
 
             await _userRepo.UpdateAsync(existingUser);
+            await _uow.SaveChangesAsync();
 
-            return existingUser;
+            return _mapper.Map<UserResponseDto>(existingUser);
         }
 
         public async Task<Stream> GetProfileImageAsync(Guid userId)

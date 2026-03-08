@@ -8,6 +8,6 @@ namespace MyFinances.App.Services
     {
         Task<PagedResultBase<TransactionResponseDto>> GetAllByUserId(TransactionFilters filters);
         Task<TransactionResponseDto> GetByIdAsync(Guid transactionId);
-        Task<Transaction> CreateAsync(TransactionDto dto);
+        Task<TransactionResponseDto> CreateAsync(TransactionDto dto);
     }
 }

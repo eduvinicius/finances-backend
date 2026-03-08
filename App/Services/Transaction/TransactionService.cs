@@ -53,7 +53,7 @@ namespace MyFinances.App.Services
             return transactionMapped;
         }
 
-        public async Task<Transaction> CreateAsync(TransactionDto dto)
+        public async Task<TransactionResponseDto> CreateAsync(TransactionDto dto)
         {
             var userId = _currentUserService.UserId;
             var account = await _accountRepo.GetByIdAsync(dto.AccountId)
@@ -91,7 +91,7 @@ namespace MyFinances.App.Services
                 await _accountRepo.UpdateAsync(account);
 
                 await _unitOfWork.CommitAsync();
-                return transaction;
+                return _mapper.Map<TransactionResponseDto>(transaction);
             }
             catch (Exception ex)
             {

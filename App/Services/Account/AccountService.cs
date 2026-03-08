@@ -2,7 +2,10 @@ using AutoMapper;
 using MyFinances.Api.DTOs;
 using MyFinances.App.Filters;
 using MyFinances.App.Shared;
+using MyFinances.Domain.Entities;
 using MyFinances.Domain.Enums;
+using MyFinances.Domain.Exceptions;
+using MyFinances.Infrastructure.Repositories.Interfaces;
 
 namespace MyFinances.App.Services
 {
@@ -17,19 +20,28 @@ namespace MyFinances.App.Services
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly ICurrentUserService _currentUserService = currentUserService;
         private readonly IMapper _mapper = mapper;
-        public async Task<IEnumerable<Account>> GetAllAsync()
+        
+        public async Task<IEnumerable<AccountResponseDto>> GetAllAsync()
         {
             var userId = _currentUserService.UserId;
-            return await _accountRepo.GetAllByUserIdAsync(userId);
+            var accounts = await _accountRepo.GetAllByUserIdAsync(userId);
+            return _mapper.Map<IEnumerable<AccountResponseDto>>(accounts);
         }
 
-        public async Task<PagedResultBase<Account>> GetPaginatedAsync(AccountFilters filters)
+        public async Task<PagedResultBase<AccountResponseDto>> GetPaginatedAsync(AccountFilters filters)
         {
             var userId = _currentUserService.UserId;
-            return await _accountRepo.GetPaginatedByUserIdAsync(userId, filters);
+            var result = await _accountRepo.GetPaginatedByUserIdAsync(userId, filters);
+            var mappedAccounts = _mapper.Map<IEnumerable<AccountResponseDto>>(result.Items);
+            
+            return new PagedResultBase<AccountResponseDto>
+            {
+                Items = (IReadOnlyCollection<AccountResponseDto>)mappedAccounts,
+                TotalCount = result.TotalCount
+            };
         }
 
-        public async Task<Account> GetByIdAsync(Guid id)
+        public async Task<AccountResponseDto> GetByIdAsync(Guid id)
         {
             var account = await _accountRepo.GetByIdAsync(id)
                 ?? throw new NotFoundException("Account not found.");
@@ -37,10 +49,10 @@ namespace MyFinances.App.Services
             if (account.UserId != _currentUserService.UserId)
                 throw new ForbiddenException("You do not have access to this account.");
 
-            return account;
+            return _mapper.Map<AccountResponseDto>(account);
         }
 
-        public async Task<Account> CreateAsync(AccountDto dto)
+        public async Task<AccountResponseDto> CreateAsync(AccountDto dto)
         {
             if (dto.Balance < 0 && dto.Type != AccountType.Credit)
                 throw new BadRequestException("Only credit accounts may start with negative balance.");
@@ -52,12 +64,16 @@ namespace MyFinances.App.Services
             await _accountRepo.AddAsync(account);
             await _unitOfWork.SaveChangesAsync();
 
-            return account;
+            return _mapper.Map<AccountResponseDto>(account);
         }
 
         public async Task DeactivateAsync(Guid id)
         {
-            var account = await GetByIdAsync(id);
+            var account = await _accountRepo.GetByIdAsync(id)
+                ?? throw new NotFoundException("Account not found.");
+
+            if (account.UserId != _currentUserService.UserId)
+                throw new ForbiddenException("You do not have access to this account.");
 
             account.IsActive = false;
             await _accountRepo.UpdateAsync(account);

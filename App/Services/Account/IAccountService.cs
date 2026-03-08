@@ -6,10 +6,10 @@ namespace MyFinances.App.Services
 {
     public interface IAccountService
     {
-        Task<Account> CreateAsync(AccountDto dto);
-        Task<IEnumerable<Account>> GetAllAsync();
-        Task<PagedResultBase<Account>> GetPaginatedAsync(AccountFilters filters);
-        Task<Account> GetByIdAsync(Guid id);
+        Task<AccountResponseDto> CreateAsync(AccountDto dto);
+        Task<IEnumerable<AccountResponseDto>> GetAllAsync();
+        Task<PagedResultBase<AccountResponseDto>> GetPaginatedAsync(AccountFilters filters);
+        Task<AccountResponseDto> GetByIdAsync(Guid id);
         Task DeactivateAsync(Guid id);
     }
 }

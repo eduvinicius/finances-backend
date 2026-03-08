@@ -1,5 +1,6 @@
 using AutoMapper;
 using MyFinances.Api.DTOs;
+using MyFinances.Domain.Entities;
 
 namespace MyFinances.Api.Mapping
 {
@@ -36,9 +37,17 @@ namespace MyFinances.Api.Mapping
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
 
+            CreateMap<Category, CategoryResponseDto>();
+
             CreateMap<AccountDto, Account>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
+
+            CreateMap<Account, AccountResponseDto>();
+
+            CreateMap<User, UserResponseDto>()
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id));
         }
     }
 }
+

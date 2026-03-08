@@ -6,9 +6,9 @@ namespace MyFinances.App.Services
 {
     public interface ICategoryService
     {
-        Task<IEnumerable<Category>> GetAllAsync();
-        Task<Category> CreateAsync(CategoryDto dto);
-        Task<PagedResultBase<Category>> GetPaginatedAsync(CategoryFilters filters);
+        Task<IEnumerable<CategoryResponseDto>> GetAllAsync();
+        Task<CategoryResponseDto> CreateAsync(CategoryDto dto);
+        Task<PagedResultBase<CategoryResponseDto>> GetPaginatedAsync(CategoryFilters filters);
     }
 
 }
