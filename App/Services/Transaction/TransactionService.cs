@@ -43,10 +43,10 @@ namespace MyFinances.App.Services
         {
             var userId = _currentUserService.UserId;
             var transaction = await _transactionRepo.GetByIdAsync(transactionId)
-                ?? throw new NotFoundException("Transaction not found.");
+                ?? throw new NotFoundException("Transação não encontrada.");
 
             if (transaction.UserId != userId)
-                throw new ForbiddenException("You do not have permission to access this transaction.");
+                throw new ForbiddenException("Você não tem permissão para acessar esta transação.");
 
             var transactionMapped = _mapper.Map<TransactionResponseDto>(transaction);
 
@@ -57,24 +57,24 @@ namespace MyFinances.App.Services
         {
             var userId = _currentUserService.UserId;
             var account = await _accountRepo.GetByIdAsync(dto.AccountId)
-             ?? throw new NotFoundException("Account not found.");
+             ?? throw new NotFoundException("Conta não encontrada.");
 
             if (account.UserId != userId)
-                throw new ForbiddenException("You do not have permission to access this account.");
+                throw new ForbiddenException("Você não tem permissão para acessar esta conta.");
 
             if (!account.IsActive)
-                throw new BadRequestException("Account is inactive.");
+                throw new BadRequestException("Conta inativa.");
 
             var category = await _categoryRepo.GetByIdAsync(dto.CategoryId)
-            ?? throw new NotFoundException("Category not found.");
+            ?? throw new NotFoundException("Categoria não encontrada.");
 
             if (category.UserId != userId)
-                throw new ForbiddenException("You do not have permission to access this category.");
+                throw new ForbiddenException("Você não tem permissão para acessar esta categoria.");
 
             dto.Amount = ValidateAmount(dto.Amount, category.Type);
 
             if (dto.Date > DateTime.UtcNow.Date)
-                throw new BadRequestException("Transaction date cannot be in the future.");
+                throw new BadRequestException("A data da transação não pode ser no futuro.");
 
             ValidateBalance(account, dto.Amount);
 
@@ -111,7 +111,7 @@ namespace MyFinances.App.Services
 
            if ((type == TransactionType.Income || type == TransactionType.Investment) && amount < 0)
             {
-                throw new BadRequestException("Amount must be positive for incomes and investments.");
+                throw new BadRequestException("O valor deve ser positivo para receitas e investimentos.");
             }
 
             return amount;
@@ -127,7 +127,7 @@ namespace MyFinances.App.Services
 
             if (account.Balance + amount < 0)
             {
-                throw new BadRequestException("Insufficient funds in the account.");
+                throw new BadRequestException("Saldo insuficiente na conta.");
             }
         }
     }

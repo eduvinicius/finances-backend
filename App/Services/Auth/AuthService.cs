@@ -22,7 +22,7 @@ namespace MyFinances.App.Services
 
         public async Task<UserDto> GetUserByIdAsync(Guid id)
         {
-            var user = await _userRepo.GetByIdAsync(id) ?? throw new NotFoundException("User not found");
+            var user = await _userRepo.GetByIdAsync(id) ?? throw new NotFoundException("Usuário não encontrado");
             var userDto = _mapper.Map<UserDto>(user);
 
             return userDto;
@@ -35,7 +35,7 @@ namespace MyFinances.App.Services
             if (await _userRepo.GetByEmailAsync(dto.Email) != null)
             {
                 _logger.LogWarning("Registration failed: Email {Email} already exists", dto.Email);
-                throw new ConflictException("Email already registered.");
+                throw new ConflictException("Email já cadastrado.");
             }
 
             var user = _mapper.Map<User>(dto);
@@ -51,12 +51,12 @@ namespace MyFinances.App.Services
             _logger.LogInformation("Login attempt for email: {Email}", dto.Email);
 
             var user = await _userRepo.GetByEmailAsync(dto.Email)
-                ?? throw new BadRequestException("Invalid credentials.");
+                ?? throw new BadRequestException("Credenciais inválidas.");
 
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             {
                 _logger.LogWarning("Failed login attempt for email: {Email} - Invalid password", dto.Email);
-                throw new BadRequestException("Invalid credentials.");
+                throw new BadRequestException("Credenciais inválidas.");
             }
 
             var token = _jwt.GenerateToken(user);
@@ -68,15 +68,15 @@ namespace MyFinances.App.Services
         public async Task<string> UploadProfileImageAsync(Guid userId, IFormFile file)
         {
             if (file == null || file.Length == 0)
-                throw new Exception("Invalid file");
+                throw new Exception("Arquivo inválido");
 
             if (!file.ContentType.StartsWith("image/"))
-                throw new Exception("Only images allowed");
+                throw new Exception("Apenas imagens são permitidas");
 
             if (file.Length > 5 * 1024 * 1024)
-                throw new Exception("Max 5MB");
+                throw new Exception("Máximo de 5MB");
 
-            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("User not found");
+            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("Usuário não encontrado");
 
             // Delete old profile image if it exists
             if (!string.IsNullOrEmpty(user.ProfileImageUrl))
@@ -116,7 +116,7 @@ namespace MyFinances.App.Services
         public async Task<UserResponseDto> UpdateUserAsync(Guid userId, UpdateUserDto user)
         {
 
-            var existingUser = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("User not found");
+            var existingUser = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("Usuário não encontrado");
 
             _mapper.Map(user, existingUser);
 
@@ -128,10 +128,10 @@ namespace MyFinances.App.Services
 
         public async Task<Stream> GetProfileImageAsync(Guid userId)
         {
-            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("User not found");
+            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("Usuário não encontrado");
 
             if (string.IsNullOrEmpty(user.ProfileImageUrl))
-                throw new NotFoundException("Profile image not found");
+                throw new NotFoundException("Imagem de perfil não encontrada");
 
             // Extract filename from the full URL
             // URL format: https://mzzvhtvojiqbvhitkcbw.supabase.co/storage/v1/object/public/ProfileImage/{fileName}

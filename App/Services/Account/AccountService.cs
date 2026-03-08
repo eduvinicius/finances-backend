@@ -44,10 +44,10 @@ namespace MyFinances.App.Services
         public async Task<AccountResponseDto> GetByIdAsync(Guid id)
         {
             var account = await _accountRepo.GetByIdAsync(id)
-                ?? throw new NotFoundException("Account not found.");
+                ?? throw new NotFoundException("Conta não encontrada.");
 
             if (account.UserId != _currentUserService.UserId)
-                throw new ForbiddenException("You do not have access to this account.");
+                throw new ForbiddenException("Você não tem acesso a esta conta.");
 
             return _mapper.Map<AccountResponseDto>(account);
         }
@@ -55,7 +55,7 @@ namespace MyFinances.App.Services
         public async Task<AccountResponseDto> CreateAsync(AccountDto dto)
         {
             if (dto.Balance < 0 && dto.Type != AccountType.Credit)
-                throw new BadRequestException("Only credit accounts may start with negative balance.");
+                throw new BadRequestException("Apenas contas de crédito podem começar com saldo negativo.");
 
             var account = _mapper.Map<Account>(dto);
             account.UserId = _currentUserService.UserId;
@@ -70,10 +70,10 @@ namespace MyFinances.App.Services
         public async Task DeactivateAsync(Guid id)
         {
             var account = await _accountRepo.GetByIdAsync(id)
-                ?? throw new NotFoundException("Account not found.");
+                ?? throw new NotFoundException("Conta não encontrada.");
 
             if (account.UserId != _currentUserService.UserId)
-                throw new ForbiddenException("You do not have access to this account.");
+                throw new ForbiddenException("Você não tem acesso a esta conta.");
 
             account.IsActive = false;
             await _accountRepo.UpdateAsync(account);

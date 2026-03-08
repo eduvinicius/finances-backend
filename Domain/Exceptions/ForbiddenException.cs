@@ -1,6 +1,6 @@
 namespace MyFinances.Domain.Exceptions
 {
-    public class ForbiddenException(string message = "You don't have permission to access this resource") : MyFinancesException(message, StatusCodes.Status403Forbidden)
+    public class ForbiddenException(string message = "Você não tem permissão para acessar este recurso") : MyFinancesException(message, StatusCodes.Status403Forbidden)
     {
     }
 }

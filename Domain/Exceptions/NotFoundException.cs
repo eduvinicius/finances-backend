@@ -3,7 +3,7 @@ namespace MyFinances.Domain.Exceptions
     public class NotFoundException : MyFinancesException
     {
         public NotFoundException(string resource, object key)
-            : base($"{resource} with ID '{key}' was not found.", StatusCodes.Status404NotFound)
+            : base($"{resource} com ID '{key}' não foi encontrado.", StatusCodes.Status404NotFound)
         {
         }
 

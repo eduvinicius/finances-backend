@@ -55,14 +55,14 @@ namespace MyFinances.Api.Middleware
                 case UnauthorizedAccessException unauthorizedException:
                     response.StatusCode = (int)HttpStatusCode.Forbidden;
                     errorResponse.StatusCode = (int)HttpStatusCode.Forbidden;
-                    errorResponse.Message = "You don't have permission to access this resource";
+                    errorResponse.Message = "Você não tem permissão para acessar este recurso";
                     _logger.LogWarning(exception, "Unauthorized access attempt");
                     break;
 
                 case DbUpdateException dbException:
                     response.StatusCode = (int)HttpStatusCode.Conflict;
                     errorResponse.StatusCode = (int)HttpStatusCode.Conflict;
-                    errorResponse.Message = "A database conflict occurred. The resource may already exist or have dependencies.";
+                    errorResponse.Message = "Um conflito no banco de dados ocorreu. O recurso pode já existir ou ter dependências.";
                     _logger.LogError(exception, "Database update exception: {Message}", dbException.Message);
                     break;
 
@@ -86,7 +86,7 @@ namespace MyFinances.Api.Middleware
                     errorResponse.StatusCode = (int)HttpStatusCode.InternalServerError;
                     errorResponse.Message = _env.IsDevelopment()
                         ? exception.Message
-                        : "An internal server error occurred. Please try again later.";
+                        : "Um erro interno do servidor ocorreu. Por favor, tente novamente mais tarde.";
 
                     _logger.LogError(exception, "Unhandled exception: {Message}", exception.Message);
                     break;
