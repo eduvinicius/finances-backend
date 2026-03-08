@@ -1,4 +1,4 @@
-﻿namespace MyFinances.App.Abstractions
+namespace MyFinances.App.Abstractions
 {
     public interface IFileStorageService
     {

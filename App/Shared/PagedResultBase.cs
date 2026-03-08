@@ -1,4 +1,4 @@
-﻿namespace MyFinances.App.Shared
+namespace MyFinances.App.Shared
 {
     public class PagedResultBase<T>
     {

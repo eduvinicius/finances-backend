@@ -1,4 +1,4 @@
-﻿using MyFinances.Api.DTOs;
+using MyFinances.Api.DTOs;
 
 namespace MyFinances.App.Queries.Interfaces
 {

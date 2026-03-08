@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using MyFinances.Api.DTOs;
 using MyFinances.App.Filters;
-using MyFinances.App.Services.Interfaces;
 
 namespace MyFinances.Api.Controllers
 {

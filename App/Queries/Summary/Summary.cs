@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MyFinances.Api.DTOs;
 using MyFinances.App.Queries.Interfaces;
-using MyFinances.App.Services.Interfaces;
+using MyFinances.App.Services;
 using MyFinances.Domain.Enums;
-using MyFinances.Infrasctructure.Data;
+using MyFinances.Infrastructure.Data;
 
 namespace MyFinances.App.Queries.Summary
 {

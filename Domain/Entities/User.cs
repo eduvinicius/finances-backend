@@ -1,4 +1,4 @@
-﻿namespace MyFinances.Domain.Entities
+namespace MyFinances.Domain.Entities
 {
     public class User
     {

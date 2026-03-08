@@ -1,8 +1,5 @@
-ï»¿using System.Net;
-using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
-using MyFinances.Api.Models;
-using MyFinances.Domain.Exceptions;
+using System.Net;
+using MyFinances.Api.Responses;
 
 namespace MyFinances.Api.Middleware
 {
@@ -41,7 +38,7 @@ namespace MyFinances.Api.Middleware
             switch (exception)
             {
                 case MyFinancesException customException:
-                    // ExceÃ§Ãµes customizadas do domÃ­nio
+                    // Exceções customizadas do domínio
                     response.StatusCode = customException.StatusCode;
                     errorResponse.StatusCode = customException.StatusCode;
                     errorResponse.Message = customException.Message;
@@ -84,7 +81,7 @@ namespace MyFinances.Api.Middleware
                     break;
 
                 default:
-                    // ExceÃ§Ãµes nÃ£o tratadas
+                    // Exceções não tratadas
                     response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     errorResponse.StatusCode = (int)HttpStatusCode.InternalServerError;
                     errorResponse.Message = _env.IsDevelopment()

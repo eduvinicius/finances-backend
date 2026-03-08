@@ -1,4 +1,4 @@
-﻿namespace MyFinances.Domain.Exceptions
+namespace MyFinances.Domain.Exceptions
 {
     public class NotFoundException : MyFinancesException
     {

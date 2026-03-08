@@ -1,4 +1,4 @@
-﻿namespace MyFinances.App.Utils
+namespace MyFinances.App.Utils
 {
     public static class ConvertStringToArrayEnum
     {

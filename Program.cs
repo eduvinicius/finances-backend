@@ -1,21 +1,14 @@
-using System.Net.Http.Headers;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyFinances.Api.Mapping;
 using MyFinances.Api.Middleware;
-using MyFinances.App.Abstractions;
 using MyFinances.App.Queries.CategoryReport;
 using MyFinances.App.Queries.Interfaces;
 using MyFinances.App.Queries.Summary;
-using MyFinances.App.Services;
-using MyFinances.App.Services.Interfaces;
-using MyFinances.Infrasctructure.Data;
-using MyFinances.Infrasctructure.Repositories;
-using MyFinances.Infrasctructure.Repositories.Interfaces;
-using MyFinances.Infrasctructure.Security;
-using MyFinances.Infrasctructure.Storage;
+using MyFinances.Infrastructure.Data;
+using MyFinances.Infrastructure.Repositories;
+using MyFinances.Infrastructure.Security;
+using MyFinances.Infrastructure.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,7 +1,5 @@
-﻿using AutoMapper;
+using AutoMapper;
 using MyFinances.Api.DTOs;
-using MyFinances.App.Services.Interfaces;
-using MyFinances.Domain.Entities;
 
 namespace MyFinances.Api.Mapping
 {

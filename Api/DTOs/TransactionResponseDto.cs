@@ -1,4 +1,4 @@
-﻿using MyFinances.Domain.Entities;
+using MyFinances.Domain.Entities;
 using MyFinances.Domain.Enums;
 
 namespace MyFinances.Api.DTOs

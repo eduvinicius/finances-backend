@@ -1,4 +1,4 @@
-﻿namespace MyFinances.Domain.Enums
+namespace MyFinances.Domain.Enums
 {
     public enum AccountType
     {

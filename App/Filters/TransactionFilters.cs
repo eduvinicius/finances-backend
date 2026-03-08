@@ -1,4 +1,4 @@
-﻿using MyFinances.Domain.Enums;
+using MyFinances.Domain.Enums;
 
 namespace MyFinances.App.Filters
 {

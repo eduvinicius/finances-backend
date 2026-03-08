@@ -1,4 +1,4 @@
-﻿namespace MyFinances.App.Filters
+namespace MyFinances.App.Filters
 {
     public class CategoryFilters: PaginationFilterBase
     {
