@@ -26,10 +26,10 @@ namespace MyFinances.Infrastructure.Repositories
                 query = query.Where(c => filters.Type.Contains((int)c.Type));
 
             if (filters.FromDate.HasValue)
-                query = query.Where(t => t.Date >= filters.FromDate.Value);
+                query = query.Where(t => t.CreatedAt >= filters.FromDate.Value);
 
             if (filters.ToDate.HasValue)
-                query = query.Where(t => t.Date <= filters.ToDate.Value);
+                query = query.Where(t => t.CreatedAt <= filters.ToDate.Value);
 
             var totalCount = await query.CountAsync();
 

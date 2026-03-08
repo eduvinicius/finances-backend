@@ -22,7 +22,7 @@ namespace MyFinances.Infrastructure.Data
                 entity.Property(x => x.Amount).IsRequired();
                 entity.Property(x => x.Type).IsRequired();
                 entity.Property(x => x.Description).IsRequired();
-                entity.Property(x => x.Date).IsRequired();
+                entity.Property(x => x.CreatedAt).IsRequired();
 
                 entity.HasOne(t => t.Account)
                       .WithMany()

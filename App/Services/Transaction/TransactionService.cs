@@ -73,9 +73,6 @@ namespace MyFinances.App.Services
 
             dto.Amount = ValidateAmount(dto.Amount, category.Type);
 
-            if (dto.Date > DateTime.UtcNow.Date)
-                throw new BadRequestException("A data da transação não pode ser no futuro.");
-
             ValidateBalance(account, dto.Amount);
 
             await _unitOfWork.BeginTransactionAsync();
@@ -95,7 +92,7 @@ namespace MyFinances.App.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating transaction");
+                _logger.LogError(ex, "Erro ao criar transação");
                 await _unitOfWork.RollbackAsync();
                 throw;
             }
