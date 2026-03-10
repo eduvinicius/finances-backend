@@ -25,6 +25,7 @@ namespace MyFinances.App.Queries.CategoryReport
 
             var categoriesReport = await _context.Transactions
                 .AsNoTracking()
+                .Include(t => t.Category)
                 .Where(t => 
                     t.UserId == userId && 
                     t.CreatedAt >= start && 

@@ -1,6 +1,7 @@
 using AutoMapper;
 using MyFinances.Api.DTOs;
 using MyFinances.Infrastructure.Security;
+using MyFinances.Infrastructure.Validators;
 using UpdateUserDto = MyFinances.Api.DTOs.UpdateUserDto;
 
 namespace MyFinances.App.Services
@@ -11,12 +12,14 @@ namespace MyFinances.App.Services
         IMapper mapper,
         ILogger<AuthService> logger,
         IFileStorageService fileStorageService,
+        IFileValidator fileValidator,
         JwtTokenGenerator jwt) : IAuthService
     {
         private readonly IUserRepository _userRepo = userRepo;
         private readonly IUnitOfWork _uow = uow;
         private readonly IMapper _mapper = mapper;
         private readonly IFileStorageService _fileStorageService = fileStorageService;
+        private readonly IFileValidator _fileValidator = fileValidator;
         private readonly ILogger<AuthService> _logger = logger;
         private readonly JwtTokenGenerator _jwt = jwt;
 
@@ -67,18 +70,10 @@ namespace MyFinances.App.Services
 
         public async Task<string> UploadProfileImageAsync(Guid userId, IFormFile file)
         {
-            if (file == null || file.Length == 0)
-                throw new Exception("Arquivo inválido");
-
-            if (!file.ContentType.StartsWith("image/"))
-                throw new Exception("Apenas imagens são permitidas");
-
-            if (file.Length > 5 * 1024 * 1024)
-                throw new Exception("Máximo de 5MB");
+            _fileValidator.ValidateProfileImage(file);
 
             var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("Usuário não encontrado");
 
-            // Delete old profile image if it exists
             if (!string.IsNullOrEmpty(user.ProfileImageUrl))
             {
                 try
@@ -133,8 +128,6 @@ namespace MyFinances.App.Services
             if (string.IsNullOrEmpty(user.ProfileImageUrl))
                 throw new NotFoundException("Imagem de perfil não encontrada");
 
-            // Extract filename from the full URL
-            // URL format: https://mzzvhtvojiqbvhitkcbw.supabase.co/storage/v1/object/public/ProfileImage/{fileName}
             var uri = new Uri(user.ProfileImageUrl);
             var fileName = uri.Segments.Last();
 

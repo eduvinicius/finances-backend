@@ -1,0 +1,44 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.EntityFrameworkCore": "Warning",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "Cors": {
+    "AllowedOrigins": [
+      "http://localhost:3000",
+      "http://localhost:4200"
+    ],
+    "ProductionOrigin": "https://seu-frontend.com"
+  },
+  "Jwt": {
+    "Issuer": "MyFinancesAPI",
+    "Audience": "MyFinancesApp",
+    "Key": "your-very-secret-key-change-in-production-at-least-32-characters"
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=myfinances;Username=postgres;Password=postgres"
+  },
+  "Supabase": {
+    "Url": "https://your-supabase-url.supabase.co",
+    "ServiceKey": "your-supabase-service-key"
+  },
+  "Swagger": {
+    "Title": "My Finances API",
+    "Version": "v1",
+    "Description": "API for managing personal finances",
+    "ContactName": "My Finances Team",
+    "ContactEmail": "contact@myfinances.com"
+  },
+  "Api": {
+    "MaxProfileImageSizeInMb": 5,
+    "AllowedImageContentTypes": [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp"
+    ]
+  }
+}

@@ -5,12 +5,20 @@ using MyFinances.Api.Middleware;
 using MyFinances.App.Queries.CategoryReport;
 using MyFinances.App.Queries.Interfaces;
 using MyFinances.App.Queries.Summary;
+using MyFinances.Infrastructure.Configuration;
 using MyFinances.Infrastructure.Data;
 using MyFinances.Infrastructure.Repositories;
 using MyFinances.Infrastructure.Security;
 using MyFinances.Infrastructure.Storage;
+using MyFinances.Infrastructure.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// ============================================
+// CONFIGURATION
+// ============================================
+builder.Services.Configure<SwaggerSettings>(builder.Configuration.GetSection("Swagger"));
+builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("Api"));
 
 // ============================================
 // LOGGING
@@ -118,15 +126,18 @@ builder.Services.AddDbContext<FinanceDbContext>(options =>
 // ============================================
 builder.Services.AddSwaggerGen(options =>
 {
+    var swaggerSettings = builder.Configuration.GetSection("Swagger").Get<SwaggerSettings>() 
+        ?? new SwaggerSettings();
+
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "My Finances",
-        Version = "v1",
-        Description = "API for managing my finances",
+        Title = swaggerSettings.Title,
+        Version = swaggerSettings.Version,
+        Description = swaggerSettings.Description,
         Contact = new OpenApiContact
         {
-            Name = "My Finances Team",
-            Email = "contact@myfinances.com"
+            Name = swaggerSettings.ContactName,
+            Email = swaggerSettings.ContactEmail
         }
     });
 
@@ -168,7 +179,7 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-builder.Services.AddScoped<IFileStorageService, SupabaseStorageService>();
+builder.Services.AddScoped<IFileValidator, FileValidator>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
@@ -216,7 +227,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookstore API v1");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "My Finances API v1");
         options.RoutePrefix = "swagger";
     });
     app.MapOpenApi();

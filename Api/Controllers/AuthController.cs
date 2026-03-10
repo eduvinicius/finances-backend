@@ -1,7 +1,9 @@
 using MyFinances.Api.DTOs;
+using MyFinances.Api.Responses;
 
 namespace MyFinances.Api.Controllers
 {
+
     [ApiController]
     [Route("api/auth")]
     public class AuthController(IAuthService authService, ICurrentUserService currentUserService) : ControllerBase
@@ -11,6 +13,9 @@ namespace MyFinances.Api.Controllers
 
         [HttpGet("current-user")]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetCurrentUser()
         {
             var userId = _currentUserService.UserId;
@@ -20,6 +25,9 @@ namespace MyFinances.Api.Controllers
         }
 
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
             await _authService.RegisterAsync(dto);
@@ -27,6 +35,8 @@ namespace MyFinances.Api.Controllers
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var token = await _authService.LoginAsync(dto);
@@ -35,6 +45,10 @@ namespace MyFinances.Api.Controllers
 
         [Authorize]
         [HttpPost("update-profile-image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> UploadProfileImage(IFormFile file)
         {
             var userId = _currentUserService.UserId;
@@ -47,6 +61,10 @@ namespace MyFinances.Api.Controllers
 
         [Authorize]
         [HttpPut("update-user")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> EditProfile(UpdateUserDto user)
         {
             var userId = _currentUserService.UserId;
@@ -56,6 +74,9 @@ namespace MyFinances.Api.Controllers
 
         [Authorize]
         [HttpGet("profile-image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> GetProfileImage()
         {
             var userId = _currentUserService.UserId;

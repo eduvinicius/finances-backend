@@ -14,6 +14,9 @@ namespace MyFinances.Infrastructure.Data
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Email).IsRequired();
                 entity.Property(x => x.FullName).IsRequired();
+                
+                entity.HasIndex(x => x.Email)
+                    .IsUnique();
             });
 
             modelBuilder.Entity<Transaction>(entity =>
@@ -36,6 +39,10 @@ namespace MyFinances.Infrastructure.Data
                       .WithMany()
                       .HasForeignKey(t => t.UserId)
                       .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(t => new { t.UserId, t.CreatedAt });
+                entity.HasIndex(t => new { t.UserId, t.CategoryId });
+                entity.HasIndex(t => new { t.UserId, t.AccountId });
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -43,6 +50,8 @@ namespace MyFinances.Infrastructure.Data
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Name).IsRequired();
                 entity.Property(x => x.Type).IsRequired();
+                
+                entity.HasIndex(x => x.UserId);
             });
 
             modelBuilder.Entity<Account>(entity =>
@@ -50,6 +59,8 @@ namespace MyFinances.Infrastructure.Data
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Name).IsRequired();
                 entity.Property(x => x.Balance).IsRequired();
+                
+                entity.HasIndex(x => x.UserId);
             });
         }
     }
