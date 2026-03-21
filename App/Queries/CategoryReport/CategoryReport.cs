@@ -30,7 +30,7 @@ namespace MyFinances.App.Queries.CategoryReport
                     t.UserId == userId && 
                     t.CreatedAt >= start && 
                     t.CreatedAt <= end && 
-                    t.Type == transactionType
+                    (transactionType == TransactionType.All || t.Type == transactionType)
                 )
                 .GroupBy(t => new
                 {
