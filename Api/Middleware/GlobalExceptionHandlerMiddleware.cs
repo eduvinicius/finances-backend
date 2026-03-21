@@ -38,7 +38,7 @@ namespace MyFinances.Api.Middleware
             switch (exception)
             {
                 case MyFinancesException customException:
-                    // Exceções customizadas do domínio
+                    // Exceï¿½ï¿½es customizadas do domï¿½nio
                     response.StatusCode = customException.StatusCode;
                     errorResponse.StatusCode = customException.StatusCode;
                     errorResponse.Message = customException.Message;
@@ -52,17 +52,17 @@ namespace MyFinances.Api.Middleware
                     _logger.LogWarning(exception, "Resource not found: {Message}", keyNotFoundException.Message);
                     break;
 
-                case UnauthorizedAccessException unauthorizedException:
+                case UnauthorizedAccessException:
                     response.StatusCode = (int)HttpStatusCode.Forbidden;
                     errorResponse.StatusCode = (int)HttpStatusCode.Forbidden;
-                    errorResponse.Message = "Você não tem permissão para acessar este recurso";
+                    errorResponse.Message = "VocÃª nÃ£o tem permissÃ£o para acessar este recurso";
                     _logger.LogWarning(exception, "Unauthorized access attempt");
                     break;
 
                 case DbUpdateException dbException:
                     response.StatusCode = (int)HttpStatusCode.Conflict;
                     errorResponse.StatusCode = (int)HttpStatusCode.Conflict;
-                    errorResponse.Message = "Um conflito no banco de dados ocorreu. O recurso pode já existir ou ter dependências.";
+                    errorResponse.Message = "Um conflito no banco de dados ocorreu. O recurso pode jÃ¡ existir ou ter dependÃªncias.";
                     _logger.LogError(exception, "Database update exception: {Message}", dbException.Message);
                     break;
 
@@ -81,7 +81,7 @@ namespace MyFinances.Api.Middleware
                     break;
 
                 default:
-                    // Exceções não tratadas
+                    // Exceï¿½ï¿½es nï¿½o tratadas
                     response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     errorResponse.StatusCode = (int)HttpStatusCode.InternalServerError;
                     errorResponse.Message = _env.IsDevelopment()
