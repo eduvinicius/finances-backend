@@ -39,8 +39,8 @@ namespace MyFinances.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
-            await _authService.RegisterAsync(dto);
-            return Ok();
+            var token = await _authService.RegisterAsync(dto);
+            return Ok(token);
         }
 
         [HttpPost("login")]

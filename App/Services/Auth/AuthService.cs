@@ -34,14 +34,14 @@ namespace MyFinances.App.Services
             return userDto;
         }
 
-        public async Task RegisterAsync(RegisterDto dto)
+        public async Task<string> RegisterAsync(RegisterDto dto)
         {
             _logger.LogInformation("Attempting to register user with email: {Email}", dto.Email);
 
             if (await _userRepo.GetByEmailAsync(dto.Email) != null)
             {
                 _logger.LogWarning("Registration failed: Email {Email} already exists", dto.Email);
-                throw new ConflictException("Email j� cadastrado.");
+                throw new ConflictException("Email já cadastrado.");
             }
 
             var user = _mapper.Map<User>(dto);
@@ -50,6 +50,8 @@ namespace MyFinances.App.Services
             await _uow.SaveChangesAsync();
 
             _logger.LogInformation("User {UserId} registered successfully with email: {Email}", user.Id, dto.Email);
+
+            return _jwt.GenerateToken(user);
         }
 
         public async Task<string> LoginAsync(LoginDto dto)

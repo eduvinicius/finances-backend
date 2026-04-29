@@ -5,7 +5,7 @@ namespace MyFinances.App.Services
     public interface IAuthService
     {
         Task<UserDto> GetUserByIdAsync(Guid userId);
-        Task RegisterAsync(RegisterDto dto);
+        Task<string> RegisterAsync(RegisterDto dto);
         Task<string> LoginAsync(LoginDto dto);
         Task<GoogleAuthResponseDto> GoogleLoginAsync(GoogleLoginDto dto);
         Task<string> UploadProfileImageAsync(Guid userId, IFormFile file);
