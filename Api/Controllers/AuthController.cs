@@ -24,6 +24,15 @@ namespace MyFinances.Api.Controllers
             return Ok(user);
         }
 
+        [HttpPost("google")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        public async Task<IActionResult> GoogleLogin(GoogleLoginDto dto)
+        {
+            var result = await _authService.GoogleLoginAsync(dto);
+            return Ok(result);
+        }
+
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(ErrorResponse))]

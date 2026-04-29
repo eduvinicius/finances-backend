@@ -17,6 +17,9 @@ namespace MyFinances.Infrastructure.Data
                 
                 entity.HasIndex(x => x.Email)
                     .IsUnique();
+                entity.HasIndex(x => x.GoogleSubjectId)
+                    .IsUnique()
+                    .HasFilter("\"GoogleSubjectId\" IS NOT NULL");
             });
 
             modelBuilder.Entity<Transaction>(entity =>

@@ -14,6 +14,13 @@ namespace MyFinances.Infrastructure.Repositories
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
 
+        public async Task<User?> GetByGoogleSubjectIdAsync(string googleSubjectId)
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.GoogleSubjectId == googleSubjectId);
+        }
+
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             return await _dbSet

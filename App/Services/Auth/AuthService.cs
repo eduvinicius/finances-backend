@@ -1,4 +1,5 @@
 using AutoMapper;
+using Google.Apis.Auth;
 using MyFinances.Api.DTOs;
 using MyFinances.Infrastructure.Security;
 using MyFinances.Infrastructure.Validators;
@@ -13,7 +14,8 @@ namespace MyFinances.App.Services
         ILogger<AuthService> logger,
         IFileStorageService fileStorageService,
         IFileValidator fileValidator,
-        JwtTokenGenerator jwt) : IAuthService
+        JwtTokenGenerator jwt,
+        IConfiguration config) : IAuthService
     {
         private readonly IUserRepository _userRepo = userRepo;
         private readonly IUnitOfWork _uow = uow;
@@ -22,10 +24,11 @@ namespace MyFinances.App.Services
         private readonly IFileValidator _fileValidator = fileValidator;
         private readonly ILogger<AuthService> _logger = logger;
         private readonly JwtTokenGenerator _jwt = jwt;
+        private readonly IConfiguration _config = config;
 
         public async Task<UserDto> GetUserByIdAsync(Guid id)
         {
-            var user = await _userRepo.GetByIdAsync(id) ?? throw new NotFoundException("Usuário não encontrado");
+            var user = await _userRepo.GetByIdAsync(id) ?? throw new NotFoundException("Usuï¿½rio nï¿½o encontrado");
             var userDto = _mapper.Map<UserDto>(user);
 
             return userDto;
@@ -38,7 +41,7 @@ namespace MyFinances.App.Services
             if (await _userRepo.GetByEmailAsync(dto.Email) != null)
             {
                 _logger.LogWarning("Registration failed: Email {Email} already exists", dto.Email);
-                throw new ConflictException("Email já cadastrado.");
+                throw new ConflictException("Email jï¿½ cadastrado.");
             }
 
             var user = _mapper.Map<User>(dto);
@@ -54,12 +57,12 @@ namespace MyFinances.App.Services
             _logger.LogInformation("Login attempt for email: {Email}", dto.Email);
 
             var user = await _userRepo.GetByEmailAsync(dto.Email)
-                ?? throw new BadRequestException("Credenciais inválidas.");
+                ?? throw new BadRequestException("Credenciais invï¿½lidas.");
 
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             {
                 _logger.LogWarning("Failed login attempt for email: {Email} - Invalid password", dto.Email);
-                throw new BadRequestException("Credenciais inválidas.");
+                throw new BadRequestException("Credenciais invï¿½lidas.");
             }
 
             var token = _jwt.GenerateToken(user);
@@ -68,11 +71,82 @@ namespace MyFinances.App.Services
             return token;
         }
 
+        public async Task<GoogleAuthResponseDto> GoogleLoginAsync(GoogleLoginDto dto)
+        {
+            var clientId = _config["Google:ClientId"]
+                ?? throw new InvalidOperationException("Google ClientId is not configured.");
+
+            GoogleJsonWebSignature.Payload payload;
+            try
+            {
+                payload = await GoogleJsonWebSignature.ValidateAsync(
+                    dto.IdToken,
+                    new GoogleJsonWebSignature.ValidationSettings { Audience = [clientId] }
+                );
+            }
+            catch (InvalidJwtException ex)
+            {
+                _logger.LogWarning(ex, "Invalid Google ID token");
+                throw new BadRequestException("Token do Google invÃ¡lido.");
+            }
+
+            var user = await _userRepo.GetByGoogleSubjectIdAsync(payload.Subject);
+
+            if (user == null)
+            {
+                user = await _userRepo.GetByEmailAsync(payload.Email);
+
+                if (user == null)
+                {
+                    user = new User
+                    {
+                        Id = Guid.NewGuid(),
+                        Email = payload.Email,
+                        FullName = payload.Name,
+                        ProfileImageUrl = payload.Picture,
+                        GoogleSubjectId = payload.Subject,
+                        LastLoginAt = DateTime.UtcNow,
+                        CreatedAt = DateTime.UtcNow,
+                        LastUpdatedAt = DateTime.UtcNow,
+                    };
+                    await _userRepo.AddAsync(user);
+                }
+                else
+                {
+                    user.GoogleSubjectId = payload.Subject;
+                    user.LastLoginAt = DateTime.UtcNow;
+                    await _userRepo.UpdateAsync(user);
+                }
+            }
+            else
+            {
+                user.LastLoginAt = DateTime.UtcNow;
+                await _userRepo.UpdateAsync(user);
+            }
+
+            await _uow.SaveChangesAsync();
+
+            var token = _jwt.GenerateToken(user);
+            _logger.LogInformation("User {UserId} authenticated via Google", user.Id);
+
+            return new GoogleAuthResponseDto
+            {
+                Token = token,
+                User = new GoogleUserDto
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Name = user.FullName,
+                    PictureUrl = user.ProfileImageUrl,
+                }
+            };
+        }
+
         public async Task<string> UploadProfileImageAsync(Guid userId, IFormFile file)
         {
             _fileValidator.ValidateProfileImage(file);
 
-            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("Usuário não encontrado");
+            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("Usuï¿½rio nï¿½o encontrado");
 
             if (!string.IsNullOrEmpty(user.ProfileImageUrl))
             {
@@ -111,7 +185,7 @@ namespace MyFinances.App.Services
         public async Task<UserResponseDto> UpdateUserAsync(Guid userId, UpdateUserDto user)
         {
 
-            var existingUser = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("Usuário não encontrado");
+            var existingUser = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("Usuï¿½rio nï¿½o encontrado");
 
             _mapper.Map(user, existingUser);
 
@@ -123,10 +197,10 @@ namespace MyFinances.App.Services
 
         public async Task<Stream> GetProfileImageAsync(Guid userId)
         {
-            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("Usuário não encontrado");
+            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("Usuï¿½rio nï¿½o encontrado");
 
             if (string.IsNullOrEmpty(user.ProfileImageUrl))
-                throw new NotFoundException("Imagem de perfil não encontrada");
+                throw new NotFoundException("Imagem de perfil nï¿½o encontrada");
 
             var uri = new Uri(user.ProfileImageUrl);
             var fileName = uri.Segments.Last();
