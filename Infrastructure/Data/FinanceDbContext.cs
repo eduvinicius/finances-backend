@@ -6,6 +6,7 @@ namespace MyFinances.Infrastructure.Data
         public DbSet<Transaction> Transactions => Set<Transaction>();
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Account> Accounts => Set<Account>();
+        public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -62,8 +63,23 @@ namespace MyFinances.Infrastructure.Data
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Name).IsRequired();
                 entity.Property(x => x.Balance).IsRequired();
-                
+
                 entity.HasIndex(x => x.UserId);
+            });
+
+            modelBuilder.Entity<PasswordResetToken>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.TokenHash).IsRequired();
+                entity.Property(x => x.ExpiresAt).IsRequired();
+                entity.Property(x => x.CreatedAt).IsRequired();
+
+                entity.HasOne(t => t.User)
+                      .WithMany()
+                      .HasForeignKey(t => t.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasIndex(t => new { t.UserId, t.Used, t.ExpiresAt });
             });
         }
     }

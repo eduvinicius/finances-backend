@@ -297,3 +297,6 @@ C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFin
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\Newtonsoft.Json.dll
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\System.Management.dll
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\runtimes\win\lib\net7.0\System.Management.dll
+C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\BouncyCastle.Cryptography.dll
+C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\MailKit.dll
+C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\MimeKit.dll

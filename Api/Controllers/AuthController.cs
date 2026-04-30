@@ -1,15 +1,20 @@
 using MyFinances.Api.DTOs;
 using MyFinances.Api.Responses;
+using MyFinances.App.Services.PasswordReset;
 
 namespace MyFinances.Api.Controllers
 {
 
     [ApiController]
     [Route("api/auth")]
-    public class AuthController(IAuthService authService, ICurrentUserService currentUserService) : ControllerBase
+    public class AuthController(
+        IAuthService authService,
+        ICurrentUserService currentUserService,
+        IPasswordResetService passwordResetService) : ControllerBase
     {
         private readonly IAuthService _authService = authService;
         private readonly ICurrentUserService _currentUserService = currentUserService;
+        private readonly IPasswordResetService _passwordResetService = passwordResetService;
 
         [HttpGet("current-user")]
         [Authorize]
@@ -92,6 +97,26 @@ namespace MyFinances.Api.Controllers
             var imageStream = await _authService.GetProfileImageAsync(userId);
 
             return File(imageStream, "image/jpeg", enableRangeProcessing: true);
+        }
+
+        [HttpPost("forgot-password")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto dto)
+        {
+            await _passwordResetService.RequestResetAsync(dto.Email);
+            return Ok();
+        }
+
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorResponse))]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
+        {
+            await _passwordResetService.ResetPasswordAsync(dto.Email, dto.Token, dto.NewPassword);
+            return Ok();
         }
     }
 }

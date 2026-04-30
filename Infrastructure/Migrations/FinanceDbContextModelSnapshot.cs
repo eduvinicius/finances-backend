@@ -84,6 +84,35 @@ namespace MyFinances.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("MyFinances.Domain.Entities.PasswordResetToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Used")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "Used", "ExpiresAt");
+
+                    b.ToTable("PasswordResetTokens");
+                });
+
             modelBuilder.Entity("MyFinances.Domain.Entities.Transaction", b =>
                 {
                     b.Property<Guid>("Id")
@@ -196,6 +225,17 @@ namespace MyFinances.Migrations
                         .HasFilter("\"GoogleSubjectId\" IS NOT NULL");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("MyFinances.Domain.Entities.PasswordResetToken", b =>
+                {
+                    b.HasOne("MyFinances.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyFinances.Domain.Entities.Transaction", b =>

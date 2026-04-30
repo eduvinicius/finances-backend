@@ -2,11 +2,14 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyFinances.Api.Mapping;
 using MyFinances.Api.Middleware;
+using MyFinances.App.Abstractions;
 using MyFinances.App.Queries.CategoryReport;
 using MyFinances.App.Queries.Interfaces;
 using MyFinances.App.Queries.Summary;
+using MyFinances.App.Services.PasswordReset;
 using MyFinances.Infrastructure.Configuration;
 using MyFinances.Infrastructure.Data;
+using MyFinances.Infrastructure.Email;
 using MyFinances.Infrastructure.Repositories;
 using MyFinances.Infrastructure.Security;
 using MyFinances.Infrastructure.Storage;
@@ -38,27 +41,27 @@ var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<st
 
 builder.Services.AddCors(options =>
 {
-    // Política para Desenvolvimento (permissiva)
+    // Polï¿½tica para Desenvolvimento (permissiva)
     options.AddPolicy("DevelopmentPolicy", policy =>
     {
         policy.WithOrigins(corsOrigins)
               .AllowAnyMethod()
               .AllowAnyHeader()
-              .AllowCredentials() // Permite cookies e autenticação
+              .AllowCredentials() // Permite cookies e autenticaï¿½ï¿½o
               .WithExposedHeaders("Content-Disposition"); // Para download de arquivos
     });
 
-    // Política para Produção (restritiva)
+    // Polï¿½tica para Produï¿½ï¿½o (restritiva)
     options.AddPolicy("ProductionPolicy", policy =>
     {
         policy.WithOrigins(builder.Configuration["Cors:ProductionOrigin"] ?? "https://seu-frontend.com")
               .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
               .WithHeaders("Authorization", "Content-Type", "Accept")
               .AllowCredentials()
-              .SetIsOriginAllowedToAllowWildcardSubdomains(); // Permite subdomínios
+              .SetIsOriginAllowedToAllowWildcardSubdomains(); // Permite subdomï¿½nios
     });
 
-    // Política ABERTA (APENAS PARA TESTES - NÃO USE EM PRODUÇÃO!)
+    // Polï¿½tica ABERTA (APENAS PARA TESTES - Nï¿½O USE EM PRODUï¿½ï¿½O!)
     options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
@@ -86,7 +89,7 @@ builder.Services.AddAuthentication("Bearer")
             )
         };
 
-        // Configuração para permitir JWT via query string (útil para SignalR/WebSockets)
+        // Configuraï¿½ï¿½o para permitir JWT via query string (ï¿½til para SignalR/WebSockets)
         options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -175,6 +178,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<JwtTokenGenerator>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPasswordResetService, PasswordResetService>();
+builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+builder.Services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
