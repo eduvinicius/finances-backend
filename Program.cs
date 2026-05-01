@@ -61,13 +61,6 @@ builder.Services.AddCors(options =>
               .SetIsOriginAllowedToAllowWildcardSubdomains(); // Permite subdom�nios
     });
 
-    // Pol�tica ABERTA (APENAS PARA TESTES - N�O USE EM PRODU��O!)
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
 });
 
 // ============================================

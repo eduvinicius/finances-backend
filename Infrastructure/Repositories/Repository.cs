@@ -38,10 +38,10 @@ namespace MyFinances.Infrastructure.Repositories
                 .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
         }
 
-        public virtual async Task UpdateAsync(T entity)
+        public virtual Task UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
         public virtual void Delete(T entity)
