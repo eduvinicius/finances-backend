@@ -34,5 +34,15 @@ namespace MyFinances.Api.Controllers
             var transaction = await _transactionService.CreateAsync(dto);
             return Ok(transaction);
         }
+
+        [HttpPost("export")]
+        public async Task<IActionResult> Export([FromBody] TransactionExportDto dto)
+        {
+            var fileBytes = await _transactionService.ExportToExcelAsync(dto);
+            var fileName = $"transactions_{DateTime.UtcNow:yyyyMMdd}.xlsx";
+            return File(fileBytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                fileName);
+        }
     }
 }

@@ -9,5 +9,6 @@ namespace MyFinances.App.Services
         Task<PagedResultBase<TransactionResponseDto>> GetAllByUserId(TransactionFilters filters);
         Task<TransactionResponseDto> GetByIdAsync(Guid transactionId);
         Task<TransactionResponseDto> CreateAsync(TransactionDto dto);
+        Task<byte[]> ExportToExcelAsync(TransactionExportDto filters);
     }
 }

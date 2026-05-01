@@ -1,4 +1,5 @@
 using AutoMapper;
+using ClosedXML.Excel;
 using MyFinances.Api.DTOs;
 using MyFinances.App.Filters;
 using MyFinances.App.Shared;
@@ -43,10 +44,10 @@ namespace MyFinances.App.Services
         {
             var userId = _currentUserService.UserId;
             var transaction = await _transactionRepo.GetByIdAsync(transactionId)
-                ?? throw new NotFoundException("Transação não encontrada.");
+                ?? throw new NotFoundException("Transaï¿½ï¿½o nï¿½o encontrada.");
 
             if (transaction.UserId != userId)
-                throw new ForbiddenException("Você não tem permissão para acessar esta transação.");
+                throw new ForbiddenException("Vocï¿½ nï¿½o tem permissï¿½o para acessar esta transaï¿½ï¿½o.");
 
             var transactionMapped = _mapper.Map<TransactionResponseDto>(transaction);
 
@@ -57,19 +58,19 @@ namespace MyFinances.App.Services
         {
             var userId = _currentUserService.UserId;
             var account = await _accountRepo.GetByIdAsync(dto.AccountId)
-             ?? throw new NotFoundException("Conta não encontrada.");
+             ?? throw new NotFoundException("Conta nï¿½o encontrada.");
 
             if (account.UserId != userId)
-                throw new ForbiddenException("Você não tem permissão para acessar esta conta.");
+                throw new ForbiddenException("Vocï¿½ nï¿½o tem permissï¿½o para acessar esta conta.");
 
             if (!account.IsActive)
                 throw new BadRequestException("Conta inativa.");
 
             var category = await _categoryRepo.GetByIdAsync(dto.CategoryId)
-            ?? throw new NotFoundException("Categoria não encontrada.");
+            ?? throw new NotFoundException("Categoria nï¿½o encontrada.");
 
             if (category.UserId != userId)
-                throw new ForbiddenException("Você não tem permissão para acessar esta categoria.");
+                throw new ForbiddenException("Vocï¿½ nï¿½o tem permissï¿½o para acessar esta categoria.");
 
             dto.Amount = ValidateAmount(dto.Amount, category.Type);
 
@@ -92,7 +93,7 @@ namespace MyFinances.App.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao criar transação");
+                _logger.LogError(ex, "Erro ao criar transaï¿½ï¿½o");
                 await _unitOfWork.RollbackAsync();
                 throw;
             }
@@ -112,6 +113,60 @@ namespace MyFinances.App.Services
             }
 
             return amount;
+        }
+
+        public async Task<byte[]> ExportToExcelAsync(TransactionExportDto filters)
+        {
+            var userId = _currentUserService.UserId;
+            var transactions = await _transactionRepo.GetForExportAsync(userId, filters);
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Transactions");
+
+            // Header row â€” order matches the frontend Transactions table
+            var headers = new[] { "Conta", "Tipo de TransaÃ§Ã£o", "DescriÃ§Ã£o", "Valor", "Data", "Categoria" };
+            for (int col = 1; col <= headers.Length; col++)
+            {
+                var cell = worksheet.Cell(1, col);
+                cell.Value = headers[col - 1];
+                cell.Style.Font.Bold = true;
+                cell.Style.Fill.PatternType = XLFillPatternValues.Solid;
+                cell.Style.Fill.BackgroundColor = XLColor.FromHtml("#2D6A4F");
+                cell.Style.Font.FontColor = XLColor.Black;
+            }
+
+            // Data rows â€” column order: Conta, Tipo de TransaÃ§Ã£o, DescriÃ§Ã£o, Valor, Data, Categoria
+            int row = 2;
+            foreach (var t in transactions)
+            {
+                worksheet.Cell(row, 1).Value = t.Account.Name;
+                worksheet.Cell(row, 2).Value = t.Type switch
+                {
+                    TransactionType.Income => "Receita",
+                    TransactionType.Expense => "Despesa",
+                    TransactionType.Investment => "Investimento",
+                    _ => t.Type.ToString()
+                };
+                worksheet.Cell(row, 3).Value = t.Description;
+                worksheet.Cell(row, 4).Value = t.Amount;
+                worksheet.Cell(row, 5).Value = t.CreatedAt.Date;
+                worksheet.Cell(row, 6).Value = t.Category.Name;
+                row++;
+            }
+
+            // Column formatting
+            var amountCol = worksheet.Column(4);
+            amountCol.Style.NumberFormat.Format = "#,##0.00";
+
+            var dateCol = worksheet.Column(5);
+            dateCol.Style.NumberFormat.Format = "yyyy-MM-dd";
+
+            // Auto-fit all columns
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream.ToArray();
         }
 
         private static void ValidateBalance(Account account, decimal amount)

@@ -300,3 +300,11 @@ C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFin
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\BouncyCastle.Cryptography.dll
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\MailKit.dll
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\MimeKit.dll
+C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\ClosedXML.dll
+C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\ClosedXML.Parser.dll
+C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\DocumentFormat.OpenXml.dll
+C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\DocumentFormat.OpenXml.Framework.dll
+C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\ExcelNumberFormat.dll
+C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\RBush.dll
+C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\SixLabors.Fonts.dll
+C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\System.IO.Packaging.dll

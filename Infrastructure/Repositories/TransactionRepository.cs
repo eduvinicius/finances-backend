@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MyFinances.Api.DTOs;
 using MyFinances.App.Filters;
 using MyFinances.App.Shared;
 using MyFinances.App.Utils;
@@ -46,6 +47,37 @@ namespace MyFinances.Infrastructure.Repositories
                 Items = items,
                 TotalCount = totalCount
             };
+        }
+
+        public async Task<IReadOnlyList<Transaction>> GetForExportAsync(Guid userId, TransactionExportDto filters)
+        {
+            var query = _context.Transactions
+                .Where(t => t.UserId == userId);
+
+            if (!filters.ExportAll)
+            {
+                if (filters.StartDate.HasValue)
+                    query = query.Where(t => t.CreatedAt >= filters.StartDate.Value);
+
+                if (filters.EndDate.HasValue)
+                    query = query.Where(t => t.CreatedAt <= filters.EndDate.Value);
+
+                if (filters.CategoryId.HasValue)
+                    query = query.Where(t => t.CategoryId == filters.CategoryId.Value);
+
+                if (filters.AccountId.HasValue)
+                    query = query.Where(t => t.AccountId == filters.AccountId.Value);
+
+                if (filters.Type.HasValue)
+                    query = query.Where(t => t.Type == filters.Type.Value);
+            }
+
+            return await query
+                .AsNoTracking()
+                .Include(t => t.Account)
+                .Include(t => t.Category)
+                .OrderBy(t => t.CreatedAt)
+                .ToListAsync();
         }
     }
 }
