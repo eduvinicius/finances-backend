@@ -23,5 +23,6 @@ namespace MyFinances.Domain.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime LastUpdatedAt { get; set; } = DateTime.UtcNow;
         public UserRole Role { get; set; } = UserRole.User;
+        public bool IsActive { get; set; } = true;
     }
 }

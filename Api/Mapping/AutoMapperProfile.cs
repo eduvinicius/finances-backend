@@ -47,6 +47,14 @@ namespace MyFinances.Api.Mapping
 
             CreateMap<User, UserResponseDto>()
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.Id));
+
+            CreateMap<User, AdminUserListItemDto>()
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()))
+                .ForMember(dest => dest.LastLogin, opt => opt.MapFrom(src => src.LastLoginAt));
+
+            CreateMap<User, AdminUserDetailDto>()
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()))
+                .ForMember(dest => dest.LastLogin, opt => opt.MapFrom(src => src.LastLoginAt));
         }
     }
 }
