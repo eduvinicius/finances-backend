@@ -10,6 +10,7 @@ namespace MyFinances.App.Services.Admin
         Task<AdminUserDetailDto> GetUserByIdAsync(Guid userId);
         Task ChangeUserRoleAsync(Guid userId, UserRole newRole);
         Task DeactivateUserAsync(Guid userId);
+        Task ActivateUserAsync(Guid userId);
         Task DeleteUserAsync(Guid userId);
     }
 }

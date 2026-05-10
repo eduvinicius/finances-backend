@@ -71,6 +71,13 @@ namespace MyFinances.App.Services
                 throw new BadRequestException("Credenciais inv�lidas.");
             }
 
+            if (!user.IsActive)
+                throw new BadRequestException("Conta desativada. Entre em contato com o administrador.");
+
+            user.LastLoginAt = DateTime.UtcNow;
+            await _userRepo.UpdateAsync(user);
+            await _uow.SaveChangesAsync();
+
             _logger.LogInformation("User {UserId} logged in successfully", user.Id);
 
             return new AuthResponseDto

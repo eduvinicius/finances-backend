@@ -38,6 +38,13 @@ namespace MyFinances.Api.Controllers
             return Ok();
         }
 
+        [HttpPatch("{id}/activate")]
+        public async Task<IActionResult> ActivateUser(Guid id)
+        {
+            await _adminUserService.ActivateUserAsync(id);
+            return Ok();
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
