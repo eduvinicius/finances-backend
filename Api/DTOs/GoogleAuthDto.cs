@@ -11,6 +11,7 @@ namespace MyFinances.Api.DTOs
     public class GoogleAuthResponseDto
     {
         public string Token { get; set; } = null!;
+        public string Role { get; set; } = null!;
         public GoogleUserDto User { get; set; } = null!;
     }
 

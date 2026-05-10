@@ -34,7 +34,7 @@ namespace MyFinances.App.Services
             return userDto;
         }
 
-        public async Task<string> RegisterAsync(RegisterDto dto)
+        public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
         {
             _logger.LogInformation("Attempting to register user with email: {Email}", dto.Email);
 
@@ -51,10 +51,14 @@ namespace MyFinances.App.Services
 
             _logger.LogInformation("User {UserId} registered successfully with email: {Email}", user.Id, dto.Email);
 
-            return _jwt.GenerateToken(user);
+            return new AuthResponseDto
+            {
+                Token = _jwt.GenerateToken(user),
+                Role = user.Role.ToString()
+            };
         }
 
-        public async Task<string> LoginAsync(LoginDto dto)
+        public async Task<AuthResponseDto> LoginAsync(LoginDto dto)
         {
             _logger.LogInformation("Login attempt for email: {Email}", dto.Email);
 
@@ -67,10 +71,13 @@ namespace MyFinances.App.Services
                 throw new BadRequestException("Credenciais inv�lidas.");
             }
 
-            var token = _jwt.GenerateToken(user);
             _logger.LogInformation("User {UserId} logged in successfully", user.Id);
 
-            return token;
+            return new AuthResponseDto
+            {
+                Token = _jwt.GenerateToken(user),
+                Role = user.Role.ToString()
+            };
         }
 
         public async Task<GoogleAuthResponseDto> GoogleLoginAsync(GoogleLoginDto dto)
@@ -134,6 +141,7 @@ namespace MyFinances.App.Services
             return new GoogleAuthResponseDto
             {
                 Token = token,
+                Role = user.Role.ToString(),
                 User = new GoogleUserDto
                 {
                     Id = user.Id,

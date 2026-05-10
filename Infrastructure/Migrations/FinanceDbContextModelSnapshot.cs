@@ -212,6 +212,9 @@ namespace MyFinances.Migrations
                     b.Property<string>("ProfileImageUrl")
                         .HasColumnType("text");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
                     b.Property<string>("State")
                         .HasColumnType("text");
 

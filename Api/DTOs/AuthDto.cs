@@ -18,4 +18,10 @@ namespace MyFinances.Api.DTOs
         [Required]
         public string Password { get; set; } = string.Empty;
     }
+
+    public class AuthResponseDto
+    {
+        public string Token { get; set; } = null!;
+        public string Role { get; set; } = null!;
+    }
 }
