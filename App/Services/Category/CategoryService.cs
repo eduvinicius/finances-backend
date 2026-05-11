@@ -30,11 +30,11 @@ namespace MyFinances.App.Services
         {
             var userId = _currentUserService.UserId;
             var result = await _categoryRepo.GetPaginatedByUserIdAsync(userId, filters);
-            var mappedCategories = _mapper.Map<IEnumerable<CategoryResponseDto>>(result.Items);
-            
+            var mappedCategories = _mapper.Map<List<CategoryResponseDto>>(result.Items);
+
             return new PagedResultBase<CategoryResponseDto>
             {
-                Items = (IReadOnlyCollection<CategoryResponseDto>)mappedCategories,
+                Items = mappedCategories.AsReadOnly(),
                 TotalCount = result.TotalCount
             };
         }

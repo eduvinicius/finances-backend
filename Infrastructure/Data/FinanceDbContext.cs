@@ -56,8 +56,13 @@ namespace MyFinances.Infrastructure.Data
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Name).IsRequired();
                 entity.Property(x => x.Type).IsRequired();
-                
+
                 entity.HasIndex(x => x.UserId);
+
+                entity.HasOne<User>()
+                      .WithMany()
+                      .HasForeignKey(c => c.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Account>(entity =>

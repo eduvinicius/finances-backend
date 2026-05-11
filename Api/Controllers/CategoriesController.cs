@@ -18,8 +18,8 @@ namespace MyFinances.Api.Controllers
             return Ok(categories);
         }
 
-        [HttpGet("paginated")]
-        public async Task<IActionResult> GetPaginatedCategories([FromQuery] CategoryFilters filters)
+        [HttpPost("getAll")]
+        public async Task<IActionResult> GetPaginatedCategories([FromBody] CategoryFilters filters)
         {
             var paginatedCategories = await _categoryService.GetPaginatedAsync(filters);
             return Ok(paginatedCategories);

@@ -1,49 +1,24 @@
-using Microsoft.EntityFrameworkCore;
 using MyFinances.Api.DTOs;
+using MyFinances.App.Abstractions;
 using MyFinances.App.Queries.Interfaces;
 using MyFinances.App.Services;
 using MyFinances.Domain.Enums;
-using MyFinances.Infrastructure.Data;
 
 namespace MyFinances.App.Queries.CategoryReport
 {
     public class CategoryReport(
-        FinanceDbContext context,
+        ICategoryReportRepository categoryReportRepository,
         ICurrentUserService currentUserService
-        ): ICategoryReport
+        ) : ICategoryReport
     {
-
-            private readonly FinanceDbContext _context = context;
-            private readonly ICurrentUserService _currentUserService = currentUserService;
+        private readonly ICategoryReportRepository _categoryReportRepository = categoryReportRepository;
+        private readonly ICurrentUserService _currentUserService = currentUserService;
 
         public async Task<IEnumerable<CategoryReportDto>> GetCategoryReportAsync(DateTime from, DateTime to, TransactionType transactionType)
         {
             var userId = _currentUserService.UserId;
 
-            var start = from.Date;
-            var end = to.Date.AddDays(1);
-
-            var categoriesReport = await _context.Transactions
-                .AsNoTracking()
-                .Include(t => t.Category)
-                .Where(t => 
-                    t.UserId == userId && 
-                    t.CreatedAt >= start && 
-                    t.CreatedAt <= end && 
-                    (transactionType == TransactionType.All || t.Type == transactionType)
-                )
-                .GroupBy(t => new
-                {
-                    t.CategoryId,
-                    t.Category.Name
-                })
-                .Select(g => new CategoryReportDto
-                {
-                    CategoryId = g.Key.CategoryId,
-                    CategoryName = g.Key.Name,
-                    TotalAmount = g.Sum(t => t.Amount)
-                })
-                .ToListAsync();
+            var categoriesReport = await _categoryReportRepository.GetCategoryReportAsync(userId, from, to, transactionType);
 
             var total = categoriesReport.Sum(c => Math.Abs(c.TotalAmount));
 
@@ -57,6 +32,5 @@ namespace MyFinances.App.Queries.CategoryReport
 
             return categoriesReport;
         }
-
     }
 }
