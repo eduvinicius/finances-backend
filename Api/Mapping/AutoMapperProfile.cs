@@ -1,12 +1,13 @@
 using AutoMapper;
 using MyFinances.Api.DTOs;
+using MyFinances.App.DTOs;
 using MyFinances.Domain.Entities;
 
 namespace MyFinances.Api.Mapping
 {
     public class AutoMapperProfile : Profile
     {
-        public AutoMapperProfile()  
+        public AutoMapperProfile()
         {
             CreateMap<RegisterDto, User>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())

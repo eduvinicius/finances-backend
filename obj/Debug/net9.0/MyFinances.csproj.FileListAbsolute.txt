@@ -200,7 +200,6 @@ C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFin
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\System.Composition.Hosting.dll
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\System.Composition.Runtime.dll
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\System.Composition.TypedParts.dll
-C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\System.Diagnostics.DiagnosticSource.dll
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\System.Text.Json.dll
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\cs\Microsoft.CodeAnalysis.resources.dll
@@ -308,3 +307,4 @@ C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFin
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\RBush.dll
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\SixLabors.Fonts.dll
 C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\System.IO.Packaging.dll
+C:\Users\Microsoft\Documents\Eduardo\Programacao\Finances\finances-backend\MyFinances\bin\Debug\net9.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

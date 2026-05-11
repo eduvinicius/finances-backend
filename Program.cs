@@ -19,10 +19,18 @@ using MyFinances.Infrastructure.Validators;
 var builder = WebApplication.CreateBuilder(args);
 
 // ============================================
+// STARTUP GUARDS
+// ============================================
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrEmpty(jwtKey))
+    throw new InvalidOperationException("JWT signing key (Jwt:Key) is not configured. Set it via user-secrets or an environment variable.");
+
+// ============================================
 // CONFIGURATION
 // ============================================
 builder.Services.Configure<SwaggerSettings>(builder.Configuration.GetSection("Swagger"));
 builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("Api"));
+builder.Services.Configure<GoogleSettings>(builder.Configuration.GetSection("Google"));
 
 // ============================================
 // LOGGING
@@ -83,19 +91,6 @@ builder.Services.AddAuthentication("Bearer")
             )
         };
 
-        // Configura��o para permitir JWT via query string (�til para SignalR/WebSockets)
-        options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                var accessToken = context.Request.Query["access_token"];
-                if (!string.IsNullOrEmpty(accessToken))
-                {
-                    context.Token = accessToken;
-                }
-                return Task.CompletedTask;
-            }
-        };
     });
 
 builder.Services.AddAuthorization();
@@ -105,9 +100,7 @@ builder.Services.AddAuthorization();
 // ============================================
 builder.Services.AddControllers();
 
-builder.Services.AddAutoMapper(cfg => {
-    cfg.AddProfile<AutoMapperProfile>();
-});
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 // ============================================
 // DATABASE
@@ -169,7 +162,7 @@ builder.Services.AddSwaggerGen(options =>
 // ============================================
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddOpenApi();
-builder.Services.AddScoped<JwtTokenGenerator>();
+builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAdminUserService, AdminUserService>();
@@ -236,6 +229,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

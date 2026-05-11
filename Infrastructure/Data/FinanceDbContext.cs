@@ -33,11 +33,13 @@ namespace MyFinances.Infrastructure.Data
 
                 entity.HasOne(t => t.Account)
                       .WithMany()
-                      .HasForeignKey(t => t.AccountId);
+                      .HasForeignKey(t => t.AccountId)
+                      .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(t => t.Category)
                       .WithMany()
-                      .HasForeignKey(t => t.CategoryId);
+                      .HasForeignKey(t => t.CategoryId)
+                      .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(t => t.User)
                       .WithMany()

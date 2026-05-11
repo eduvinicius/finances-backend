@@ -1,4 +1,4 @@
-using MyFinances.Api.DTOs;
+using MyFinances.App.DTOs;
 
 namespace MyFinances.App.Services
 {

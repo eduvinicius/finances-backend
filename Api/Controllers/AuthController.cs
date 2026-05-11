@@ -1,5 +1,6 @@
 using MyFinances.Api.DTOs;
 using MyFinances.Api.Responses;
+using MyFinances.App.DTOs;
 using MyFinances.App.Services.PasswordReset;
 
 namespace MyFinances.Api.Controllers

@@ -1,37 +1,50 @@
 using AutoMapper;
 using Google.Apis.Auth;
-using MyFinances.Api.DTOs;
-using MyFinances.Infrastructure.Security;
+using Microsoft.Extensions.Options;
+using MyFinances.App.DTOs;
+using MyFinances.Infrastructure.Configuration;
 using MyFinances.Infrastructure.Validators;
-using UpdateUserDto = MyFinances.Api.DTOs.UpdateUserDto;
 
 namespace MyFinances.App.Services
 {
-    public class AuthService(
-        IUserRepository userRepo,
-        IUnitOfWork uow,
-        IMapper mapper,
-        ILogger<AuthService> logger,
-        IFileStorageService fileStorageService,
-        IFileValidator fileValidator,
-        JwtTokenGenerator jwt,
-        IConfiguration config) : IAuthService
+    public class AuthService : IAuthService
     {
-        private readonly IUserRepository _userRepo = userRepo;
-        private readonly IUnitOfWork _uow = uow;
-        private readonly IMapper _mapper = mapper;
-        private readonly IFileStorageService _fileStorageService = fileStorageService;
-        private readonly IFileValidator _fileValidator = fileValidator;
-        private readonly ILogger<AuthService> _logger = logger;
-        private readonly JwtTokenGenerator _jwt = jwt;
-        private readonly IConfiguration _config = config;
+        private const string InvalidCredentialsMessage = "Credenciais inválidas.";
+        private const string UserNotFoundMessage = "Usuário não encontrado";
 
-        public async Task<UserDto> GetUserByIdAsync(Guid id)
+        private readonly IUserRepository _userRepo;
+        private readonly IUnitOfWork _uow;
+        private readonly IMapper _mapper;
+        private readonly IFileStorageService _fileStorageService;
+        private readonly IFileValidator _fileValidator;
+        private readonly ILogger<AuthService> _logger;
+        private readonly IJwtTokenGenerator _jwt;
+        private readonly GoogleSettings _googleSettings;
+
+        public AuthService(
+            IUserRepository userRepo,
+            IUnitOfWork uow,
+            IMapper mapper,
+            ILogger<AuthService> logger,
+            IFileStorageService fileStorageService,
+            IFileValidator fileValidator,
+            IJwtTokenGenerator jwt,
+            IOptions<GoogleSettings> googleSettings)
         {
-            var user = await _userRepo.GetByIdAsync(id) ?? throw new NotFoundException("Usu�rio n�o encontrado");
-            var userDto = _mapper.Map<UserDto>(user);
+            _userRepo = userRepo;
+            _uow = uow;
+            _mapper = mapper;
+            _logger = logger;
+            _fileStorageService = fileStorageService;
+            _fileValidator = fileValidator;
+            _jwt = jwt;
+            _googleSettings = googleSettings.Value;
+        }
 
-            return userDto;
+        public async Task<UserDto> GetUserByIdAsync(Guid userId)
+        {
+            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException(UserNotFoundMessage);
+            return _mapper.Map<UserDto>(user);
         }
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
@@ -62,17 +75,19 @@ namespace MyFinances.App.Services
         {
             _logger.LogInformation("Login attempt for email: {Email}", dto.Email);
 
-            var user = await _userRepo.GetByEmailAsync(dto.Email)
-                ?? throw new BadRequestException("Credenciais inv�lidas.");
+            var user = await _userRepo.GetByEmailAsync(dto.Email);
+
+            if (user == null || !user.IsActive)
+            {
+                _logger.LogWarning("Failed login attempt for email: {Email} - User not found or inactive", dto.Email);
+                throw new BadRequestException(InvalidCredentialsMessage);
+            }
 
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             {
                 _logger.LogWarning("Failed login attempt for email: {Email} - Invalid password", dto.Email);
-                throw new BadRequestException("Credenciais inv�lidas.");
+                throw new BadRequestException(InvalidCredentialsMessage);
             }
-
-            if (!user.IsActive)
-                throw new BadRequestException("Conta desativada. Entre em contato com o administrador.");
 
             user.LastLoginAt = DateTime.UtcNow;
             await _userRepo.UpdateAsync(user);
@@ -89,8 +104,7 @@ namespace MyFinances.App.Services
 
         public async Task<GoogleAuthResponseDto> GoogleLoginAsync(GoogleLoginDto dto)
         {
-            var clientId = _config["Google:ClientId"]
-                ?? throw new InvalidOperationException("Google ClientId is not configured.");
+            var clientId = _googleSettings.ClientId;
 
             GoogleJsonWebSignature.Payload payload;
             try
@@ -108,9 +122,15 @@ namespace MyFinances.App.Services
 
             var user = await _userRepo.GetByGoogleSubjectIdAsync(payload.Subject);
 
+            if (user != null && !user.IsActive)
+                throw new BadRequestException(InvalidCredentialsMessage);
+
             if (user == null)
             {
                 user = await _userRepo.GetByEmailAsync(payload.Email);
+
+                if (user != null && !user.IsActive)
+                    throw new BadRequestException(InvalidCredentialsMessage);
 
                 if (user == null)
                 {
@@ -163,14 +183,14 @@ namespace MyFinances.App.Services
         {
             _fileValidator.ValidateProfileImage(file);
 
-            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("Usu�rio n�o encontrado");
+            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException(UserNotFoundMessage);
 
             if (!string.IsNullOrEmpty(user.ProfileImageUrl))
             {
                 try
                 {
                     var uri = new Uri(user.ProfileImageUrl);
-                    var oldFileName = uri.Segments.Last();
+                    var oldFileName = uri.Segments[^1];
                     await _fileStorageService.DeleteAsync(oldFileName);
                     _logger.LogInformation("Old profile image deleted for user {UserId}", userId);
                 }
@@ -199,10 +219,9 @@ namespace MyFinances.App.Services
             return imageUrl;
         }
 
-        public async Task<UserResponseDto> UpdateUserAsync(Guid userId, UpdateUserDto user)
+        public async Task<UserResponseDto> UpdateUserAsync(Guid id, UpdateUserDto user)
         {
-
-            var existingUser = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("Usu�rio n�o encontrado");
+            var existingUser = await _userRepo.GetByIdAsync(id) ?? throw new NotFoundException(UserNotFoundMessage);
 
             _mapper.Map(user, existingUser);
 
@@ -214,16 +233,15 @@ namespace MyFinances.App.Services
 
         public async Task<Stream> GetProfileImageAsync(Guid userId)
         {
-            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException("Usu�rio n�o encontrado");
+            var user = await _userRepo.GetByIdAsync(userId) ?? throw new NotFoundException(UserNotFoundMessage);
 
             if (string.IsNullOrEmpty(user.ProfileImageUrl))
-                throw new NotFoundException("Imagem de perfil n�o encontrada");
+                throw new NotFoundException("Imagem de perfil não encontrada");
 
             var uri = new Uri(user.ProfileImageUrl);
-            var fileName = uri.Segments.Last();
+            var fileName = uri.Segments[^1];
 
             return await _fileStorageService.DownloadAsync(fileName);
         }
-
     }
 }

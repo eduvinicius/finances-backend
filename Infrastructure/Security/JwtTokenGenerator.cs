@@ -6,7 +6,7 @@ using MyFinances.Domain.Entities;
 
 namespace MyFinances.Infrastructure.Security
 {
-    public class JwtTokenGenerator(IConfiguration config)
+    public class JwtTokenGenerator(IConfiguration config) : IJwtTokenGenerator
     {
         private readonly IConfiguration _config = config;
 
