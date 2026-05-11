@@ -1,5 +1,5 @@
 using AutoMapper;
-using MyFinances.Api.DTOs;
+using MyFinances.App.DTOs;
 using MyFinances.App.Filters;
 using MyFinances.App.Shared;
 using MyFinances.Domain.Entities;
@@ -32,11 +32,11 @@ namespace MyFinances.App.Services
         {
             var userId = _currentUserService.UserId;
             var result = await _accountRepo.GetPaginatedByUserIdAsync(userId, filters);
-            var mappedAccounts = _mapper.Map<IEnumerable<AccountResponseDto>>(result.Items);
-            
+            var mappedAccounts = _mapper.Map<List<AccountResponseDto>>(result.Items);
+
             return new PagedResultBase<AccountResponseDto>
             {
-                Items = (IReadOnlyCollection<AccountResponseDto>)mappedAccounts,
+                Items = mappedAccounts,
                 TotalCount = result.TotalCount
             };
         }
@@ -44,10 +44,10 @@ namespace MyFinances.App.Services
         public async Task<AccountResponseDto> GetByIdAsync(Guid id)
         {
             var account = await _accountRepo.GetByIdAsync(id)
-                ?? throw new NotFoundException("Conta não encontrada.");
+                ?? throw new NotFoundException("Conta nï¿½o encontrada.");
 
             if (account.UserId != _currentUserService.UserId)
-                throw new ForbiddenException("Você não tem acesso a esta conta.");
+                throw new ForbiddenException("Vocï¿½ nï¿½o tem acesso a esta conta.");
 
             return _mapper.Map<AccountResponseDto>(account);
         }
@@ -55,7 +55,7 @@ namespace MyFinances.App.Services
         public async Task<AccountResponseDto> CreateAsync(AccountDto dto)
         {
             if (dto.Balance < 0 && dto.Type != AccountType.Credit)
-                throw new BadRequestException("Apenas contas de crédito podem começar com saldo negativo.");
+                throw new BadRequestException("Apenas contas de crï¿½dito podem comeï¿½ar com saldo negativo.");
 
             var account = _mapper.Map<Account>(dto);
             account.UserId = _currentUserService.UserId;
@@ -70,10 +70,10 @@ namespace MyFinances.App.Services
         public async Task DeactivateAsync(Guid id)
         {
             var account = await _accountRepo.GetByIdAsync(id)
-                ?? throw new NotFoundException("Conta não encontrada.");
+                ?? throw new NotFoundException("Conta nï¿½o encontrada.");
 
             if (account.UserId != _currentUserService.UserId)
-                throw new ForbiddenException("Você não tem acesso a esta conta.");
+                throw new ForbiddenException("Vocï¿½ nï¿½o tem acesso a esta conta.");
 
             account.IsActive = false;
             await _accountRepo.UpdateAsync(account);

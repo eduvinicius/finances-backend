@@ -233,6 +233,15 @@ namespace MyFinances.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("MyFinances.Domain.Entities.Account", b =>
+                {
+                    b.HasOne("MyFinances.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("MyFinances.Domain.Entities.PasswordResetToken", b =>
                 {
                     b.HasOne("MyFinances.Domain.Entities.User", "User")

@@ -1,4 +1,4 @@
-using MyFinances.Api.DTOs;
+using MyFinances.App.DTOs;
 using MyFinances.App.Filters;
 namespace MyFinances.Api.Controllers
 {

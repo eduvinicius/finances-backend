@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyFinances.Migrations
 {
     [DbContext(typeof(FinanceDbContext))]
-    [Migration("20260510165633_AddRestrictDeleteBehaviorToTransactionRelationships")]
+    [Migration("20260511184919_AddRestrictDeleteBehaviorToTransactionRelationships")]
     partial class AddRestrictDeleteBehaviorToTransactionRelationships
     {
         /// <inheritdoc />
@@ -234,6 +234,15 @@ namespace MyFinances.Migrations
                         .HasFilter("\"GoogleSubjectId\" IS NOT NULL");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("MyFinances.Domain.Entities.Account", b =>
+                {
+                    b.HasOne("MyFinances.Domain.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MyFinances.Domain.Entities.PasswordResetToken", b =>

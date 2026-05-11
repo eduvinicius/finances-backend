@@ -67,6 +67,11 @@ namespace MyFinances.Infrastructure.Data
                 entity.Property(x => x.Balance).IsRequired();
 
                 entity.HasIndex(x => x.UserId);
+
+                entity.HasOne<User>()
+                      .WithMany()
+                      .HasForeignKey(a => a.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<PasswordResetToken>(entity =>

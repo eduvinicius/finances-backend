@@ -1,12 +1,2 @@
-using MyFinances.Domain.Enums;
-
-namespace MyFinances.Api.DTOs
-{
-    public class AccountDto
-    {
-        public string Name { get; set; } = string.Empty;
-        public AccountType Type { get; set; }
-        public decimal Balance { get; set; }
-        public bool IsActive { get; set; }
-    }
-}
+// AccountDto has been moved to MyFinances.App.DTOs.
+// This file is intentionally empty; use MyFinances.App.DTOs.AccountDto instead.

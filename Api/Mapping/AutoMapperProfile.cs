@@ -42,7 +42,9 @@ namespace MyFinances.Api.Mapping
 
             CreateMap<AccountDto, Account>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
+                .ForMember(dest => dest.UserId, opt => opt.Ignore())
+                .ForMember(dest => dest.IsActive, opt => opt.Ignore());
 
             CreateMap<Account, AccountResponseDto>();
 
