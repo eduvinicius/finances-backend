@@ -40,6 +40,7 @@ namespace MyFinances.Infrastructure.Repositories
 
             var items = await query
                 .AsNoTracking()
+                .OrderByDescending(c => c.CreatedAt)
                 .Skip((filters.Page - 1) * filters.PageSize)
                 .Take(filters.PageSize)
                 .ToListAsync();

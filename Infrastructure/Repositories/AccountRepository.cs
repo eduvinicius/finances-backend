@@ -39,6 +39,7 @@ namespace MyFinances.Infrastructure.Repositories
             var totalCount = await query.CountAsync();
             var items = await query
                 .AsNoTracking()
+                .OrderByDescending(a => a.CreatedAt)
                 .Skip((filters.Page - 1) * filters.PageSize)
                 .Take(filters.PageSize)
                 .ToListAsync();

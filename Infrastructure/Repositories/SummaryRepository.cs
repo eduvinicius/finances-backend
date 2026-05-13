@@ -40,6 +40,7 @@ namespace MyFinances.Infrastructure.Repositories
                     Income = g.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount),
                     Expenses = g.Where(t => t.Type == TransactionType.Expense).Sum(t => Math.Abs(t.Amount))
                 })
+                .OrderBy(g => g.Income)
                 .FirstOrDefaultAsync();
 
             if (aggregates == null)

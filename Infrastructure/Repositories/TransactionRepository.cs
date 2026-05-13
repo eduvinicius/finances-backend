@@ -48,12 +48,13 @@ namespace MyFinances.Infrastructure.Repositories
 
             var totalCount = await query.CountAsync();
 
-            var items =  await query
+            var items = await query
                 .AsNoTracking()
-                .Skip((filters.Page - 1) * filters.PageSize)
-                .Take(filters.PageSize)
                 .Include(t => t.Account)
                 .Include(t => t.Category)
+                .OrderByDescending(t => t.CreatedAt)
+                .Skip((filters.Page - 1) * filters.PageSize)
+                .Take(filters.PageSize)
                 .ToListAsync();
 
             return new PagedResultBase<Transaction>
