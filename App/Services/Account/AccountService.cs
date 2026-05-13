@@ -43,11 +43,9 @@ namespace MyFinances.App.Services
 
         public async Task<AccountResponseDto> GetByIdAsync(Guid id)
         {
-            var account = await _accountRepo.GetByIdAsync(id)
+            var userId = _currentUserService.UserId;
+            var account = await _accountRepo.GetByIdAsync(id, userId)
                 ?? throw new NotFoundException("Conta n�o encontrada.");
-
-            if (account.UserId != _currentUserService.UserId)
-                throw new ForbiddenException("Voc� n�o tem acesso a esta conta.");
 
             return _mapper.Map<AccountResponseDto>(account);
         }
@@ -69,11 +67,9 @@ namespace MyFinances.App.Services
 
         public async Task DeactivateAsync(Guid id)
         {
-            var account = await _accountRepo.GetByIdAsync(id)
+            var userId = _currentUserService.UserId;
+            var account = await _accountRepo.GetByIdAsync(id, userId)
                 ?? throw new NotFoundException("Conta n�o encontrada.");
-
-            if (account.UserId != _currentUserService.UserId)
-                throw new ForbiddenException("Voc� n�o tem acesso a esta conta.");
 
             account.IsActive = false;
             await _accountRepo.UpdateAsync(account);

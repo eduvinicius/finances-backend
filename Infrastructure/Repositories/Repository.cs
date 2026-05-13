@@ -35,6 +35,7 @@ namespace MyFinances.Infrastructure.Repositories
         public virtual async Task<T?> GetByIdAsync(Guid id)
         {
             return await WithIncludes()
+                .AsNoTracking()
                 .FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
         }
 
@@ -47,11 +48,6 @@ namespace MyFinances.Infrastructure.Repositories
         public virtual void Delete(T entity)
         {
             _dbSet.Remove(entity);
-        }
-
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
         }
 
     }

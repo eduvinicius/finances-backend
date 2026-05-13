@@ -25,11 +25,13 @@ namespace MyFinances.Infrastructure.Security
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            var expirationMinutes = _config.GetValue<int>("Jwt:ExpirationMinutes", 60);
+
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
+                expires: DateTime.UtcNow.AddMinutes(expirationMinutes),
                 signingCredentials: creds
             );
 

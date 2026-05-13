@@ -8,7 +8,7 @@ using MyFinances.App.Queries.Interfaces;
 using MyFinances.App.Queries.Summary;
 using MyFinances.App.Services.Admin;
 using MyFinances.App.Services.PasswordReset;
-using MyFinances.Infrastructure.Configuration;
+using MyFinances.App.Configuration;
 using MyFinances.Infrastructure.Data;
 using MyFinances.Infrastructure.Email;
 using MyFinances.Infrastructure.Repositories;
@@ -192,14 +192,17 @@ builder.Services.AddHttpClient<IFileStorageService, SupabaseStorageService>((pro
     var configuration = provider.GetRequiredService<IConfiguration>();
 
     var supabaseUrl = configuration["Supabase:Url"];
-    var serviceKey = configuration["Supabase:ServiceKey"];
+    var apiKey = configuration["Supabase:ApiKey"];
+
+    if (string.IsNullOrEmpty(apiKey))
+        throw new InvalidOperationException("Supabase service key (Supabase:ApiKey) is not configured. Set it via user-secrets or an environment variable.");
 
     client.BaseAddress = new Uri(supabaseUrl ?? throw new InvalidOperationException("Supabase URL is not configured."));
 
-    client.DefaultRequestHeaders.Add("apikey", serviceKey);
+    client.DefaultRequestHeaders.Add("apikey", apiKey);
 
     client.DefaultRequestHeaders.Authorization =
-        new AuthenticationHeaderValue("Bearer", serviceKey);
+        new AuthenticationHeaderValue("Bearer", apiKey);
 });
 
 var app = builder.Build();

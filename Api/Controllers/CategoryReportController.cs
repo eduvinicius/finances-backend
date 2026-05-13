@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyFinances.Api.DTOs;
+using MyFinances.App.DTOs;
 using MyFinances.App.Queries.Interfaces;
 using MyFinances.Domain.Enums;
 

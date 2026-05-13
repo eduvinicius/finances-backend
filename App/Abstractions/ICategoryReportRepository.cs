@@ -1,4 +1,4 @@
-using MyFinances.Api.DTOs;
+using MyFinances.App.DTOs;
 using MyFinances.Domain.Enums;
 
 namespace MyFinances.App.Abstractions

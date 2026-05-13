@@ -1,6 +1,7 @@
 using AutoMapper;
 using ClosedXML.Excel;
 using MyFinances.Api.DTOs;
+using MyFinances.App.DTOs;
 using MyFinances.App.Filters;
 using MyFinances.App.Shared;
 using MyFinances.Domain.Enums;
@@ -54,20 +55,14 @@ namespace MyFinances.App.Services
         public async Task<TransactionResponseDto> CreateAsync(TransactionDto dto)
         {
             var userId = _currentUserService.UserId;
-            var account = await _accountRepo.GetByIdAsync(dto.AccountId)
+            var account = await _accountRepo.GetByIdAsync(dto.AccountId, userId)
              ?? throw new NotFoundException("Conta n�o encontrada.");
-
-            if (account.UserId != userId)
-                throw new ForbiddenException("Voc� n�o tem permiss�o para acessar esta conta.");
 
             if (!account.IsActive)
                 throw new BadRequestException("Conta inativa.");
 
-            var category = await _categoryRepo.GetByIdAsync(dto.CategoryId)
+            var category = await _categoryRepo.GetByIdAsync(dto.CategoryId, userId)
             ?? throw new NotFoundException("Categoria n�o encontrada.");
-
-            if (category.UserId != userId)
-                throw new ForbiddenException("Voc� n�o tem permiss�o para acessar esta categoria.");
 
             dto.Amount = ValidateAmount(dto.Amount, category.Type);
 

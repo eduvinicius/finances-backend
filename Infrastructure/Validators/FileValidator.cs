@@ -1,14 +1,9 @@
 using Microsoft.Extensions.Options;
-using MyFinances.Domain.Exceptions;
-using MyFinances.Infrastructure.Configuration;
+using MyFinances.App.Abstractions;
+using MyFinances.App.Configuration;
 
 namespace MyFinances.Infrastructure.Validators
 {
-    public interface IFileValidator
-    {
-        void ValidateProfileImage(IFormFile file);
-    }
-
     public class FileValidator(IOptions<ApiSettings> options) : IFileValidator
     {
         private readonly ApiSettings _settings = options.Value;
@@ -16,14 +11,14 @@ namespace MyFinances.Infrastructure.Validators
         public void ValidateProfileImage(IFormFile file)
         {
             if (file == null || file.Length == 0)
-                throw new ValidationException("Arquivo inválido");
+                throw new ValidationException("Arquivo invï¿½lido");
 
             if (!_settings.AllowedImageContentTypes.Contains(file.ContentType))
-                throw new ValidationException("Apenas imagens são permitidas");
+                throw new ValidationException("Apenas imagens sï¿½o permitidas");
 
             var maxSize = _settings.MaxProfileImageSizeInMb * 1024 * 1024;
             if (file.Length > maxSize)
-                throw new ValidationException($"Máximo de {_settings.MaxProfileImageSizeInMb}MB");
+                throw new ValidationException($"Mï¿½ximo de {_settings.MaxProfileImageSizeInMb}MB");
         }
     }
 }

@@ -8,6 +8,5 @@ namespace MyFinances.App.Abstractions
         Task<T?> GetByIdAsync(Guid id);
         Task UpdateAsync(T entity);
         void Delete(T entity);
-        Task SaveChangesAsync();
     }
 }

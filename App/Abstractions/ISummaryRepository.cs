@@ -1,4 +1,4 @@
-using MyFinances.Api.DTOs;
+using MyFinances.App.DTOs;
 using MyFinances.App.Queries.Interfaces;
 
 namespace MyFinances.App.Abstractions

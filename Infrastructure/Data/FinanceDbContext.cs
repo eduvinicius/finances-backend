@@ -70,6 +70,8 @@ namespace MyFinances.Infrastructure.Data
                 entity.HasKey(x => x.Id);
                 entity.Property(x => x.Name).IsRequired();
                 entity.Property(x => x.Balance).IsRequired();
+                entity.Property(x => x.CreatedAt).HasDefaultValueSql("NOW()");
+                entity.Property(x => x.IsActive).HasDefaultValue(true);
 
                 entity.HasIndex(x => x.UserId);
 

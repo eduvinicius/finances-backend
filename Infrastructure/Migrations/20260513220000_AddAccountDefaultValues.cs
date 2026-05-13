@@ -5,41 +5,45 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MyFinances.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCategoryUserForeignKeyAndFixCreatedAtDefault : Migration
+    public partial class AddAccountDefaultValues : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // Fix the CreatedAt column default so future rows get the current timestamp
+            migrationBuilder.AlterColumn<bool>(
+                name: "IsActive",
+                table: "Accounts",
+                type: "boolean",
+                nullable: false,
+                defaultValue: true,
+                oldClrType: typeof(bool),
+                oldType: "boolean");
+
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedAt",
-                table: "Categories",
+                table: "Accounts",
                 type: "timestamp with time zone",
                 nullable: false,
                 defaultValueSql: "NOW()",
                 oldClrType: typeof(DateTime),
                 oldType: "timestamp with time zone");
-
-            // Add foreign key from Categories.UserId -> Users.Id with RESTRICT on delete
-            migrationBuilder.AddForeignKey(
-                name: "FK_Categories_Users_UserId",
-                table: "Categories",
-                column: "UserId",
-                principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Categories_Users_UserId",
-                table: "Categories");
+            migrationBuilder.AlterColumn<bool>(
+                name: "IsActive",
+                table: "Accounts",
+                type: "boolean",
+                nullable: false,
+                oldClrType: typeof(bool),
+                oldType: "boolean",
+                oldDefaultValue: true);
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedAt",
-                table: "Categories",
+                table: "Accounts",
                 type: "timestamp with time zone",
                 nullable: false,
                 oldClrType: typeof(DateTime),

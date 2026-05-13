@@ -1,6 +1,6 @@
 using AutoMapper;
-using MyFinances.Api.DTOs;
 using MyFinances.App.Abstractions;
+using MyFinances.App.DTOs;
 using MyFinances.App.Shared;
 using MyFinances.Domain.Enums;
 

@@ -69,14 +69,18 @@ namespace MyFinances.Api.Middleware
                 case ArgumentException argumentException:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     errorResponse.StatusCode = (int)HttpStatusCode.BadRequest;
-                    errorResponse.Message = argumentException.Message;
+                    errorResponse.Message = _env.IsDevelopment()
+                        ? argumentException.Message
+                        : "Um argumento inválido foi fornecido.";
                     _logger.LogWarning(exception, "Invalid argument: {Message}", argumentException.Message);
                     break;
 
                 case InvalidOperationException invalidOpException:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     errorResponse.StatusCode = (int)HttpStatusCode.BadRequest;
-                    errorResponse.Message = invalidOpException.Message;
+                    errorResponse.Message = _env.IsDevelopment()
+                        ? invalidOpException.Message
+                        : "Uma operação inválida foi realizada.";
                     _logger.LogWarning(exception, "Invalid operation: {Message}", invalidOpException.Message);
                     break;
 

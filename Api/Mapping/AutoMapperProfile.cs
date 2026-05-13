@@ -30,6 +30,7 @@ namespace MyFinances.Api.Mapping
 
             CreateMap<TransactionDto, Transaction>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.UserId, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
 
             CreateMap<Transaction, TransactionResponseDto>()
@@ -40,6 +41,7 @@ namespace MyFinances.Api.Mapping
 
             CreateMap<CategoryDto, Category>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.UserId, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
 
             CreateMap<Category, CategoryResponseDto>();

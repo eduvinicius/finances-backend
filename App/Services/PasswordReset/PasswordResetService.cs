@@ -7,14 +7,12 @@ namespace MyFinances.App.Services.PasswordReset
 {
     public class PasswordResetService(
         IUserRepository userRepo,
-        IPasswordResetTokenRepository tokenRepo,
         IEmailService emailService,
         IUnitOfWork uow,
         IConfiguration config,
         ILogger<PasswordResetService> logger) : IPasswordResetService
     {
         private readonly IUserRepository _userRepo = userRepo;
-        private readonly IPasswordResetTokenRepository _tokenRepo = tokenRepo;
         private readonly IEmailService _emailService = emailService;
         private readonly IUnitOfWork _uow = uow;
         private readonly IConfiguration _config = config;
@@ -32,7 +30,7 @@ namespace MyFinances.App.Services.PasswordReset
             }
 
             // Invalidate existing unused tokens for this user
-            var existingTokens = await _tokenRepo.GetValidTokensByUserIdAsync(user.Id);
+            var existingTokens = await _uow.Tokens.GetValidTokensByUserIdAsync(user.Id);
             foreach (var t in existingTokens)
                 t.Used = true;
 
@@ -48,7 +46,7 @@ namespace MyFinances.App.Services.PasswordReset
                 CreatedAt = DateTime.UtcNow,
             };
 
-            await _tokenRepo.AddAsync(resetToken);
+            await _uow.Tokens.AddAsync(resetToken);
 
             var frontendBaseUrl = _config["App:FrontendBaseUrl"]
                 ?? throw new InvalidOperationException("App:FrontendBaseUrl is not configured.");
@@ -68,7 +66,7 @@ namespace MyFinances.App.Services.PasswordReset
             var user = await _userRepo.GetByEmailAsync(email.ToLowerInvariant())
                 ?? throw new NotFoundException("Usuário não encontrado.");
 
-            var validTokens = await _tokenRepo.GetValidTokensByUserIdAsync(user.Id);
+            var validTokens = await _uow.Tokens.GetValidTokensByUserIdAsync(user.Id);
             var token = validTokens
                 .OrderByDescending(t => t.CreatedAt)
                 .FirstOrDefault(t => BCrypt.Net.BCrypt.Verify(rawToken, t.TokenHash));

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using MyFinances.Api.DTOs;
 using MyFinances.App.Abstractions;
+using MyFinances.App.DTOs;
 using MyFinances.Domain.Enums;
 using MyFinances.Infrastructure.Data;
 
@@ -25,7 +25,7 @@ namespace MyFinances.Infrastructure.Repositories
                 .Where(t =>
                     t.UserId == userId &&
                     t.CreatedAt >= start &&
-                    t.CreatedAt <= end &&
+                    t.CreatedAt < end &&
                     (transactionType == TransactionType.All || t.Type == transactionType)
                 )
                 .GroupBy(t => new

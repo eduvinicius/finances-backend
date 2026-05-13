@@ -1,5 +1,5 @@
-using MyFinances.Api.DTOs;
 using MyFinances.App.Abstractions;
+using MyFinances.App.DTOs;
 using MyFinances.App.Queries.Interfaces;
 using MyFinances.App.Services;
 

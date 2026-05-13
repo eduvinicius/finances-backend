@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyFinances.Migrations
 {
     [DbContext(typeof(FinanceDbContext))]
-    [Migration("20260511200000_AddCategoryUserForeignKeyAndFixCreatedAtDefault")]
-    partial class AddCategoryUserForeignKeyAndFixCreatedAtDefault
+    [Migration("20260513220000_AddAccountDefaultValues")]
+    partial class AddAccountDefaultValues
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,10 +35,14 @@ namespace MyFinances.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -236,24 +240,6 @@ namespace MyFinances.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("MyFinances.Domain.Entities.Account", b =>
-                {
-                    b.HasOne("MyFinances.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MyFinances.Domain.Entities.Category", b =>
-                {
-                    b.HasOne("MyFinances.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("MyFinances.Domain.Entities.PasswordResetToken", b =>
                 {
                     b.HasOne("MyFinances.Domain.Entities.User", "User")
@@ -270,13 +256,13 @@ namespace MyFinances.Migrations
                     b.HasOne("MyFinances.Domain.Entities.Account", "Account")
                         .WithMany()
                         .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MyFinances.Domain.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MyFinances.Domain.Entities.User", "User")

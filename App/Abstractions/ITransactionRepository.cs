@@ -1,4 +1,4 @@
-using MyFinances.Api.DTOs;
+using MyFinances.App.DTOs;
 using MyFinances.App.Shared;
 using MyFinances.Domain.Entities;
 

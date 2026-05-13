@@ -10,6 +10,13 @@ namespace MyFinances.Infrastructure.Repositories
 {
     public class CategoryRepository(FinanceDbContext context) : Repository<Category>(context), ICategoryRepository
     {
+        public override Task<Category?> GetByIdAsync(Guid id) =>
+            throw new NotSupportedException("Use GetByIdAsync(Guid id, Guid userId) to ensure ownership scoping.");
+
+        public async Task<Category?> GetByIdAsync(Guid id, Guid userId) =>
+            await _context.Categories.AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+
         public async Task<PagedResultBase<Category>> GetPaginatedByUserIdAsync(Guid userId, CategoryFilters filters)
         {
             var typeEnums = ConvertStringToArrayEnum.Convert(filters.Type);

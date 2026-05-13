@@ -9,7 +9,8 @@ namespace MyFinances.Infrastructure.Repositories
         IUserRepository userRepository,
         IAccountRepository accountRepository,
         ICategoryRepository categoryRepository,
-        ITransactionRepository transactionRepository) : IUnitOfWork
+        ITransactionRepository transactionRepository,
+        IPasswordResetTokenRepository passwordResetTokenRepository) : IUnitOfWork
     {
 
         private readonly FinanceDbContext _context = context;
@@ -19,6 +20,7 @@ namespace MyFinances.Infrastructure.Repositories
         public IAccountRepository Accounts { get; } = accountRepository;
         public ICategoryRepository Categories { get; } = categoryRepository;
         public ITransactionRepository Transactions { get; } = transactionRepository;
+        public IPasswordResetTokenRepository Tokens { get; } = passwordResetTokenRepository;
 
         public async Task BeginTransactionAsync()
         {
@@ -30,10 +32,13 @@ namespace MyFinances.Infrastructure.Repositories
 
         public async Task CommitAsync()
         {
+            if (_transaction == null)
+                throw new InvalidOperationException("No active transaction to commit. Call BeginTransactionAsync() first.");
+
             try
             {
                 await _context.SaveChangesAsync();
-                await _transaction!.CommitAsync();
+                await _transaction.CommitAsync();
             }
             finally
             {

@@ -1,8 +1,4 @@
-namespace MyFinances.Infrastructure.Configuration
-{
-    public class ApiSettings
-    {
-        public int MaxProfileImageSizeInMb { get; set; } = 5;
-        public string[] AllowedImageContentTypes { get; set; } = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-    }
-}
+// ApiSettings has been moved to MyFinances.App.Configuration.
+// This file is intentionally left as a type alias to avoid breaking any
+// remaining references while the canonical type lives in the App layer.
+global using ApiSettings = MyFinances.App.Configuration.ApiSettings;

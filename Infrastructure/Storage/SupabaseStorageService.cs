@@ -1,19 +1,20 @@
-using System.Net.Sockets;
 using MyFinances.App.Abstractions;
 
 namespace MyFinances.Infrastructure.Storage
 {
-    public class SupabaseStorageService(HttpClient httpClient) : IFileStorageService
+    public class SupabaseStorageService(HttpClient httpClient, IConfiguration configuration) : IFileStorageService
     {
         private readonly HttpClient _httpClient = httpClient;
-        private readonly string _bucketName = "ProfileImage";
+        private readonly string _bucketName = configuration["Supabase:Bucket"]
+            ?? throw new InvalidOperationException("Supabase:Bucket is not configured.");
+        private readonly string _supabaseUrl = (configuration["Supabase:Url"]
+            ?? throw new InvalidOperationException("Supabase:Url is not configured.")).TrimEnd('/');
 
         public async Task<string> UploadAsync(
             string fileName,
             Stream fileStream,
             string contentType)
         {
-
             var content = new StreamContent(fileStream);
             content.Headers.ContentType =
                 new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
@@ -24,7 +25,7 @@ namespace MyFinances.Infrastructure.Storage
 
             response.EnsureSuccessStatusCode();
 
-            return $"https://mzzvhtvojiqbvhitkcbw.supabase.co/storage/v1/object/public/{_bucketName}/{fileName}";
+            return $"{_supabaseUrl}/storage/v1/object/public/{_bucketName}/{fileName}";
         }
 
         public async Task<Stream> DownloadAsync(string fileName)

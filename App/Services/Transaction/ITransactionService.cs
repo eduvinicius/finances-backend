@@ -1,4 +1,5 @@
 using MyFinances.Api.DTOs;
+using MyFinances.App.DTOs;
 using MyFinances.App.Filters;
 using MyFinances.App.Shared;
 

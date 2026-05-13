@@ -6,6 +6,7 @@ namespace MyFinances.App.Abstractions
         IAccountRepository Accounts { get; }
         ICategoryRepository Categories { get; }
         ITransactionRepository Transactions { get; }
+        IPasswordResetTokenRepository Tokens { get; }
 
         Task BeginTransactionAsync();
         Task CommitAsync();

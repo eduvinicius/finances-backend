@@ -1,9 +1,9 @@
 using AutoMapper;
 using Google.Apis.Auth;
 using Microsoft.Extensions.Options;
+using MyFinances.App.Abstractions;
+using MyFinances.App.Configuration;
 using MyFinances.App.DTOs;
-using MyFinances.Infrastructure.Configuration;
-using MyFinances.Infrastructure.Validators;
 
 namespace MyFinances.App.Services
 {

@@ -10,6 +10,13 @@ namespace MyFinances.Infrastructure.Repositories
 {
     public class AccountRepository(FinanceDbContext context) : Repository<Account>(context), IAccountRepository
     {
+        public override Task<Account?> GetByIdAsync(Guid id) =>
+            throw new NotSupportedException("Use GetByIdAsync(Guid id, Guid userId) to ensure ownership scoping.");
+
+        public async Task<Account?> GetByIdAsync(Guid id, Guid userId) =>
+            await _context.Accounts.AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
+
         public async Task<PagedResultBase<Account>> GetPaginatedByUserIdAsync(Guid userId, AccountFilters filters)
         {
 
