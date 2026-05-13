@@ -2,7 +2,7 @@ using MyFinances.App.Filters;
 using MyFinances.App.Shared;
 using MyFinances.Domain.Entities;
 
-namespace MyFinances.Infrastructure.Repositories.Interfaces
+namespace MyFinances.App.Abstractions
 {
     public interface IAccountRepository : IRepository<Account>
     {

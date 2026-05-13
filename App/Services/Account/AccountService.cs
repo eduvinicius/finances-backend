@@ -5,7 +5,7 @@ using MyFinances.App.Shared;
 using MyFinances.Domain.Entities;
 using MyFinances.Domain.Enums;
 using MyFinances.Domain.Exceptions;
-using MyFinances.Infrastructure.Repositories.Interfaces;
+using MyFinances.App.Abstractions;
 
 namespace MyFinances.App.Services
 {

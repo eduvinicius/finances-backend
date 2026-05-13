@@ -2,7 +2,7 @@ using MyFinances.Api.DTOs;
 using MyFinances.App.Shared;
 using MyFinances.Domain.Entities;
 
-namespace MyFinances.Infrastructure.Repositories.Interfaces
+namespace MyFinances.App.Abstractions
 {
     public interface IUserRepository : IRepository<User>
     {

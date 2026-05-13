@@ -5,7 +5,7 @@ using MyFinances.App.Shared;
 using MyFinances.App.Utils;
 using MyFinances.Domain.Entities;
 using MyFinances.Infrastructure.Data;
-using MyFinances.Infrastructure.Repositories.Interfaces;
+using MyFinances.App.Abstractions;
 
 namespace MyFinances.Infrastructure.Repositories
 {

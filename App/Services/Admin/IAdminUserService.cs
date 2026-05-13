@@ -6,8 +6,8 @@ namespace MyFinances.App.Services.Admin
 {
     public interface IAdminUserService
     {
-        Task<PagedResultBase<AdminUserListItemDto>> GetUsersAsync(AdminUserFilterDto filters);
-        Task<AdminUserDetailDto> GetUserByIdAsync(Guid userId);
+        Task<PagedResultBase<AdminUserListItemResponseDto>> GetUsersAsync(AdminUserFilterDto filters);
+        Task<AdminUserDetailResponseDto> GetUserByIdAsync(Guid userId);
         Task ChangeUserRoleAsync(Guid userId, UserRole newRole);
         Task DeactivateUserAsync(Guid userId);
         Task ActivateUserAsync(Guid userId);

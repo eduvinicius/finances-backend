@@ -1,4 +1,4 @@
-namespace MyFinances.Infrastructure.Repositories.Interfaces
+namespace MyFinances.App.Abstractions
 {
     public interface IUnitOfWork : IDisposable
     {

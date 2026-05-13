@@ -3,7 +3,7 @@ using MyFinances.Domain.Enums;
 
 namespace MyFinances.Api.DTOs
 {
-    public class AdminUserListItemDto
+    public class AdminUserListItemResponseDto
     {
         public Guid Id { get; set; }
         public string Email { get; set; } = null!;
@@ -15,7 +15,7 @@ namespace MyFinances.Api.DTOs
         public DateTime? LastLogin { get; set; }
     }
 
-    public class AdminUserDetailDto : AdminUserListItemDto
+    public class AdminUserDetailResponseDto : AdminUserListItemResponseDto
     {
         public string? Address { get; set; }
         public string? City { get; set; }

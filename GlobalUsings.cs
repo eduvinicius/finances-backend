@@ -9,4 +9,3 @@ global using MyFinances.App.Abstractions;
 global using MyFinances.App.Services;
 global using MyFinances.Domain.Entities;
 global using MyFinances.Domain.Exceptions;
-global using MyFinances.Infrastructure.Repositories.Interfaces;

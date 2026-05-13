@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using MyFinances.App.Abstractions;
 using MyFinances.Infrastructure.Data;
-using MyFinances.Infrastructure.Repositories.Interfaces;
 
 namespace MyFinances.Infrastructure.Repositories
 {

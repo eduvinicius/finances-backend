@@ -1,11 +1,10 @@
 using AutoMapper;
 using MyFinances.Api.DTOs;
-using MyFinances.App.Services.Admin;
+using MyFinances.App.Abstractions;
 using MyFinances.App.Shared;
 using MyFinances.Domain.Enums;
-using MyFinances.Infrastructure.Repositories.Interfaces;
 
-namespace MyFinances.App.Services
+namespace MyFinances.App.Services.Admin
 {
     public class AdminUserService(
         IUserRepository userRepo,
@@ -20,30 +19,33 @@ namespace MyFinances.App.Services
         private readonly ICurrentUserService _currentUserService = currentUserService;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<PagedResultBase<AdminUserListItemDto>> GetUsersAsync(AdminUserFilterDto filters)
+        public async Task<PagedResultBase<AdminUserListItemResponseDto>> GetUsersAsync(AdminUserFilterDto filters)
         {
             var adminId = _currentUserService.UserId;
             var pagedUsers = await _userRepo.GetAllFilteredAsync(filters, adminId);
 
-            var mappedItems = _mapper.Map<IReadOnlyCollection<AdminUserListItemDto>>(pagedUsers.Items);
+            var mappedItems = _mapper.Map<IReadOnlyCollection<AdminUserListItemResponseDto>>(pagedUsers.Items);
 
-            return new PagedResultBase<AdminUserListItemDto>
+            return new PagedResultBase<AdminUserListItemResponseDto>
             {
                 Items = mappedItems,
                 TotalCount = pagedUsers.TotalCount
             };
         }
 
-        public async Task<AdminUserDetailDto> GetUserByIdAsync(Guid userId)
+        public async Task<AdminUserDetailResponseDto> GetUserByIdAsync(Guid userId)
         {
             var user = await _userRepo.GetByIdAsync(userId)
                 ?? throw new NotFoundException(UserNotFound);
 
-            return _mapper.Map<AdminUserDetailDto>(user);
+            return _mapper.Map<AdminUserDetailResponseDto>(user);
         }
 
         public async Task ChangeUserRoleAsync(Guid userId, UserRole newRole)
         {
+            if (!Enum.IsDefined(typeof(UserRole), newRole))
+                throw new BadRequestException("Papel de usuário inválido.");
+
             var adminId = _currentUserService.UserId;
 
             if (userId == adminId)

@@ -3,7 +3,7 @@ using MyFinances.Api.DTOs;
 using MyFinances.App.Filters;
 using MyFinances.App.Shared;
 using MyFinances.Domain.Entities;
-using MyFinances.Infrastructure.Repositories.Interfaces;
+using MyFinances.App.Abstractions;
 
 namespace MyFinances.App.Services
 {

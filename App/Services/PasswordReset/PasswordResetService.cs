@@ -1,7 +1,6 @@
 using MyFinances.App.Abstractions;
 using MyFinances.Domain.Entities;
 using MyFinances.Domain.Exceptions;
-using MyFinances.Infrastructure.Repositories.Interfaces;
 using System.Security.Cryptography;
 
 namespace MyFinances.App.Services.PasswordReset

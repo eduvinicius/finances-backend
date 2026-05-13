@@ -3,7 +3,7 @@ using MyFinances.Api.DTOs;
 using MyFinances.App.Shared;
 using MyFinances.Domain.Entities;
 using MyFinances.Infrastructure.Data;
-using MyFinances.Infrastructure.Repositories.Interfaces;
+using MyFinances.App.Abstractions;
 
 namespace MyFinances.Infrastructure.Repositories
 {
@@ -35,13 +35,13 @@ namespace MyFinances.Infrastructure.Repositories
             var query = _dbSet.Where(u => u.Id != excludeUserId);
 
             if (!string.IsNullOrWhiteSpace(filters.FullName))
-                query = query.Where(u => u.FullName.ToLower().Contains(filters.FullName.ToLower()));
+                query = query.Where(u => EF.Functions.ILike(u.FullName, $"%{filters.FullName}%"));
 
             if (!string.IsNullOrWhiteSpace(filters.Nickname))
-                query = query.Where(u => u.Nickname != null && u.Nickname.ToLower().Contains(filters.Nickname.ToLower()));
+                query = query.Where(u => u.Nickname != null && EF.Functions.ILike(u.Nickname, $"%{filters.Nickname}%"));
 
             if (!string.IsNullOrWhiteSpace(filters.DocumentNumber))
-                query = query.Where(u => u.DocumentNumber != null && u.DocumentNumber.ToLower().Contains(filters.DocumentNumber.ToLower()));
+                query = query.Where(u => u.DocumentNumber != null && EF.Functions.ILike(u.DocumentNumber, $"%{filters.DocumentNumber}%"));
 
             if (filters.Role.HasValue)
                 query = query.Where(u => u.Role == filters.Role.Value);
@@ -52,7 +52,7 @@ namespace MyFinances.Infrastructure.Repositories
             if (filters.CreatedAtTo.HasValue)
                 query = query.Where(u => u.CreatedAt <= filters.CreatedAtTo.Value);
 
-            var totalCount = await query.CountAsync();
+            var totalCount = await query.AsNoTracking().CountAsync();
 
             var items = await query
                 .AsNoTracking()

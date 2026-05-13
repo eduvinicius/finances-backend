@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MyFinances.App.Filters;
 using MyFinances.Domain.Entities;
 using MyFinances.Infrastructure.Data;
-using MyFinances.Infrastructure.Repositories.Interfaces;
+using MyFinances.App.Abstractions;
 using MyFinances.App.Utils;
 using MyFinances.App.Shared;
 
