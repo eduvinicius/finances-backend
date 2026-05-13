@@ -186,6 +186,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ISummaryQuery, SummaryQuery>();
 builder.Services.AddScoped<ICategoryReport, CategoryReport>();
 builder.Services.AddScoped<ICategoryReportRepository, CategoryReportRepository>();
+builder.Services.AddScoped<ISummaryRepository, SummaryRepository>();
 builder.Services.AddHttpClient<IFileStorageService, SupabaseStorageService>((provider, client) =>
 {
     var configuration = provider.GetRequiredService<IConfiguration>();

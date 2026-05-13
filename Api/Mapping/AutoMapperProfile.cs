@@ -32,7 +32,11 @@ namespace MyFinances.Api.Mapping
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
 
-            CreateMap<Transaction, TransactionResponseDto>();
+            CreateMap<Transaction, TransactionResponseDto>()
+                .ForMember(dest => dest.Account, opt => opt.MapFrom(src =>
+                    new TransactionAccountSummaryDto(src.Account.Id, src.Account.Name)))
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src =>
+                    new TransactionCategorySummaryDto(src.Category.Id, src.Category.Name, src.Category.Type.ToString())));
 
             CreateMap<CategoryDto, Category>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())

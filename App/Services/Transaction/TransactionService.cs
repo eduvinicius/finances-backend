@@ -29,11 +29,11 @@ namespace MyFinances.App.Services
         {
             var userId = _currentUserService.UserId;
             var transactions = await _transactionRepo.GetAllTransactionsAsync(userId, filters);
-            var transactionsMapped = _mapper.Map<IEnumerable<TransactionResponseDto>>(transactions.Items);
+            var transactionsMapped = _mapper.Map<List<TransactionResponseDto>>(transactions.Items);
 
             var transactionResponse = new PagedResultBase<TransactionResponseDto>
             {
-                Items = (IReadOnlyCollection<TransactionResponseDto>)transactionsMapped,
+                Items = transactionsMapped.AsReadOnly(),
                 TotalCount = transactions.TotalCount,
             };
 
@@ -43,11 +43,8 @@ namespace MyFinances.App.Services
         public async Task<TransactionResponseDto> GetByIdAsync(Guid transactionId)
         {
             var userId = _currentUserService.UserId;
-            var transaction = await _transactionRepo.GetByIdAsync(transactionId)
+            var transaction = await _transactionRepo.GetByIdAsync(transactionId, userId)
                 ?? throw new NotFoundException("Transa��o n�o encontrada.");
-
-            if (transaction.UserId != userId)
-                throw new ForbiddenException("Voc� n�o tem permiss�o para acessar esta transa��o.");
 
             var transactionMapped = _mapper.Map<TransactionResponseDto>(transaction);
 

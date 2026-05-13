@@ -21,10 +21,6 @@ namespace MyFinances.Api.Controllers
         public async Task<IActionResult> GetTransaction(Guid id)
         {
             var transaction = await _transactionService.GetByIdAsync(id);
-
-            if (transaction == null)
-                return NotFound();
-
             return Ok(transaction);
         }
 

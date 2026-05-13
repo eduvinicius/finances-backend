@@ -14,7 +14,5 @@ namespace MyFinances.Api.DTOs
         public TransactionType Type { get; set; }
         [StringLength(500)]
         public string Description { get; set; } = string.Empty;
-        [Required]
-        public DateTime Date { get; set; }
     }
 }

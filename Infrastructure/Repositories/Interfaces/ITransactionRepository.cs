@@ -8,5 +8,6 @@ namespace MyFinances.Infrastructure.Repositories.Interfaces
     {
         Task<PagedResultBase<Transaction>> GetAllTransactionsAsync(Guid userId, App.Filters.TransactionFilters filters);
         Task<IReadOnlyList<Transaction>> GetForExportAsync(Guid userId, TransactionExportDto filters);
+        Task<Transaction?> GetByIdAsync(Guid transactionId, Guid userId);
     }
 }
