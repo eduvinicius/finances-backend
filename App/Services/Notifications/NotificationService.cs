@@ -71,25 +71,34 @@ namespace MyFinances.App.Services.Notifications
                     return allUsers;
 
                 case NotificationTargetingMode.SingleUser:
+                    var singleUser = await _notificationRepo.GetUsersByIdsAsync(targetUserIds!);
+                    if (singleUser.Count == 0)
+                        throw new BadRequestException("O usuário selecionado não existe, está inativo ou é um administrador.");
                     await _notificationRepo.AddUserNotificationAsync(new UserNotification
                     {
                         Notification = notification,
-                        UserId = targetUserIds![0],
+                        UserId = singleUser[0].Id,
                         ExpiresAt = expiresAt
                     });
-                    return await _notificationRepo.GetUsersByIdsAsync(targetUserIds);
+                    return singleUser;
 
                 case NotificationTargetingMode.SelectedUsers:
-                    foreach (var userId in targetUserIds!)
+                    var distinctIds = targetUserIds!.Distinct().ToList();
+                    var selectedUsers = await _notificationRepo.GetUsersByIdsAsync(distinctIds);
+                    if (selectedUsers.Count == 0)
+                        throw new BadRequestException("Nenhum dos usuários selecionados existe, está ativo ou possui perfil de usuário comum.");
+                    if (selectedUsers.Count != distinctIds.Count)
+                        throw new BadRequestException("Um ou mais usuários selecionados são administradores, inexistentes ou inativos.");
+                    foreach (var user in selectedUsers)
                     {
                         await _notificationRepo.AddUserNotificationAsync(new UserNotification
                         {
                             Notification = notification,
-                            UserId = userId,
+                            UserId = user.Id,
                             ExpiresAt = expiresAt
                         });
                     }
-                    return await _notificationRepo.GetUsersByIdsAsync(targetUserIds);
+                    return selectedUsers;
 
                 default:
                     throw new BadRequestException($"Unsupported targeting mode: {targetingMode}.");

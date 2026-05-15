@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyFinances.App.Abstractions;
 using MyFinances.Domain.Entities;
+using MyFinances.Domain.Enums;
 using MyFinances.Infrastructure.Data;
 
 namespace MyFinances.Infrastructure.Repositories
@@ -65,7 +66,7 @@ namespace MyFinances.Infrastructure.Repositories
         public async Task<List<User>> GetAllUsersAsync()
         {
             return await _context.Users
-                .Where(u => u.IsActive)
+                .Where(u => u.IsActive && u.Role == UserRole.User)
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -73,7 +74,7 @@ namespace MyFinances.Infrastructure.Repositories
         public async Task<List<User>> GetUsersByIdsAsync(List<Guid> userIds)
         {
             return await _context.Users
-                .Where(u => userIds.Contains(u.Id) && u.IsActive)
+                .Where(u => userIds.Contains(u.Id) && u.IsActive && u.Role == UserRole.User)
                 .AsNoTracking()
                 .ToListAsync();
         }

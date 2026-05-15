@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MyFinances.App.DTOs;
 using MyFinances.App.Shared;
 using MyFinances.Domain.Entities;
+using MyFinances.Domain.Enums;
 using MyFinances.Infrastructure.Data;
 using MyFinances.App.Abstractions;
 
@@ -35,7 +36,7 @@ namespace MyFinances.Infrastructure.Repositories
             var safe = name.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
             return await _dbSet
                 .AsNoTracking()
-                .Where(u => u.IsActive && EF.Functions.ILike(u.FullName, $"%{safe}%", "\\"))
+                .Where(u => u.IsActive && u.Role == UserRole.User && EF.Functions.ILike(u.FullName, $"%{safe}%", "\\"))
                 .OrderBy(u => u.FullName)
                 .Take(limit)
                 .ToListAsync();
