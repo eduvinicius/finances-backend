@@ -7,6 +7,8 @@ namespace MyFinances.Infrastructure.Data
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Account> Accounts => Set<Account>();
         public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
+        public DbSet<Notification> Notifications => Set<Notification>();
+        public DbSet<UserNotification> UserNotifications => Set<UserNotification>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -94,6 +96,38 @@ namespace MyFinances.Infrastructure.Data
                       .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasIndex(t => new { t.UserId, t.Used, t.ExpiresAt });
+            });
+
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Title).IsRequired();
+                entity.Property(x => x.Body).IsRequired();
+                entity.Property(x => x.TargetingMode).IsRequired();
+                entity.Property(x => x.DeliveryChannel).IsRequired();
+                entity.Property(x => x.CreatedAt).IsRequired();
+            });
+
+            modelBuilder.Entity<UserNotification>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.IsRead).HasDefaultValue(false);
+                entity.Property(x => x.IsDeleted).HasDefaultValue(false);
+                entity.Property(x => x.ExpiresAt).IsRequired();
+
+                entity.HasOne(un => un.Notification)
+                      .WithMany(n => n.UserNotifications)
+                      .HasForeignKey(un => un.NotificationId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(un => un.User)
+                      .WithMany()
+                      .HasForeignKey(un => un.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasIndex(un => new { un.UserId, un.IsDeleted, un.ExpiresAt });
+                entity.HasIndex(un => new { un.UserId, un.IsRead });
+                entity.HasIndex(un => un.NotificationId);
             });
         }
     }

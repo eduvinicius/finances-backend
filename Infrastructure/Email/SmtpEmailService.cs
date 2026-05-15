@@ -91,5 +91,60 @@ namespace MyFinances.Infrastructure.Email
 
             _logger.LogInformation("Password reset email sent to {Email}", toEmail);
         }
+
+        public async Task SendEmailAsync(string toEmail, string toName, string subject, string body)
+        {
+            var host = _config["Email:SmtpHost"]!;
+            var port = int.Parse(_config["Email:SmtpPort"]!);
+            var user = _config["Email:SmtpUser"]!;
+            var password = _config["Email:SmtpPassword"]!;
+            var fromAddress = _config["Email:FromAddress"]!;
+            var fromName = _config["Email:FromName"] ?? "MyFinances";
+
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress(fromName, fromAddress));
+            message.To.Add(new MailboxAddress(toName, toEmail));
+            message.Subject = subject;
+
+            var bodyBuilder = new BodyBuilder
+            {
+                HtmlBody = $"""
+                    <!DOCTYPE html>
+                    <html lang="pt-BR">
+                    <head><meta charset="UTF-8" /></head>
+                    <body style="font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0;">
+                      <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4; padding: 40px 0;">
+                        <tr>
+                          <td align="center">
+                            <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:8px; padding:40px;">
+                              <tr>
+                                <td>
+                                  <h2 style="color:#1a1a1a; margin-bottom:8px;">{subject}</h2>
+                                  <p style="color:#555; font-size:15px;">Olá, {toName}!</p>
+                                  <p style="color:#555; font-size:15px;">{body}</p>
+                                  <hr style="border:none; border-top:1px solid #eee; margin: 24px 0;" />
+                                  <p style="color:#aaa; font-size:12px; text-align:center;">MyFinances</p>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </body>
+                    </html>
+                    """,
+                TextBody = $"{subject}\n\nOlá, {toName}!\n\n{body}"
+            };
+
+            message.Body = bodyBuilder.ToMessageBody();
+
+            using var client = new SmtpClient();
+            await client.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+            await client.AuthenticateAsync(user, password);
+            await client.SendAsync(message);
+            await client.DisconnectAsync(true);
+
+            _logger.LogInformation("Notification email sent to {Email}", toEmail);
+        }
     }
 }

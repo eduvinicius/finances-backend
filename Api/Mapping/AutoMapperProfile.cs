@@ -1,5 +1,6 @@
 using AutoMapper;
 using MyFinances.Api.DTOs;
+using MyFinances.Api.DTOs.Notifications;
 using MyFinances.App.DTOs;
 using MyFinances.Domain.Entities;
 
@@ -64,6 +65,15 @@ namespace MyFinances.Api.Mapping
             CreateMap<User, AdminUserDetailResponseDto>()
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()))
                 .ForMember(dest => dest.LastLogin, opt => opt.MapFrom(src => src.LastLoginAt));
+
+            CreateMap<Notification, NotificationResponseDto>()
+                .ForMember(dest => dest.TargetingMode, opt => opt.MapFrom(src => src.TargetingMode.ToString()))
+                .ForMember(dest => dest.DeliveryChannel, opt => opt.MapFrom(src => src.DeliveryChannel.ToString()));
+
+            CreateMap<UserNotification, UserNotificationResponseDto>()
+                .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Notification.Title))
+                .ForMember(dest => dest.Body, opt => opt.MapFrom(src => src.Notification.Body))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.Notification.CreatedAt));
         }
     }
 }

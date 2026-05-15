@@ -8,6 +8,7 @@ using MyFinances.App.Queries.Interfaces;
 using MyFinances.App.Queries.Summary;
 using MyFinances.App.Services.Admin;
 using MyFinances.App.Services.Home;
+using MyFinances.App.Services.Notifications;
 using MyFinances.App.Services.PasswordReset;
 using MyFinances.App.Configuration;
 using MyFinances.Infrastructure.Data;
@@ -189,6 +190,8 @@ builder.Services.AddScoped<ISummaryQuery, SummaryQuery>();
 builder.Services.AddScoped<ICategoryReport, CategoryReport>();
 builder.Services.AddScoped<ICategoryReportRepository, CategoryReportRepository>();
 builder.Services.AddScoped<ISummaryRepository, SummaryRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddHttpClient<IFileStorageService, SupabaseStorageService>((provider, client) =>
 {
     var configuration = provider.GetRequiredService<IConfiguration>();
