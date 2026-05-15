@@ -50,6 +50,18 @@ namespace MyFinances.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        // AsNoTracking intentionally omitted — caller mutates the returned entities.
+        public async Task<List<UserNotification>> GetUnreadUserNotificationsAsync(Guid userId)
+        {
+            return await _context.UserNotifications
+                .Where(un =>
+                    un.UserId == userId &&
+                    !un.IsRead &&
+                    !un.IsDeleted &&
+                    un.ExpiresAt > DateTime.UtcNow)
+                .ToListAsync();
+        }
+
         public async Task<List<User>> GetAllUsersAsync()
         {
             return await _context.Users

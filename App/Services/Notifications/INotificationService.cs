@@ -16,6 +16,8 @@ namespace MyFinances.App.Services.Notifications
 
         Task MarkAsReadAsync(int userNotificationId);
 
+        Task MarkAllAsReadAsync();
+
         Task DeleteUserNotificationAsync(int userNotificationId);
 
         Task<List<Notification>> GetAdminNotificationHistoryAsync();

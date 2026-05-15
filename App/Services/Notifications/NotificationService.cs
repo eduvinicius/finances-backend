@@ -132,6 +132,21 @@ namespace MyFinances.App.Services.Notifications
             await _unitOfWork.SaveChangesAsync();
         }
 
+        public async Task MarkAllAsReadAsync()
+        {
+            var userId = _currentUserService.UserId;
+            var unread = await _notificationRepo.GetUnreadUserNotificationsAsync(userId);
+
+            var now = DateTime.UtcNow;
+            foreach (var userNotification in unread)
+            {
+                userNotification.IsRead = true;
+                userNotification.ReadAt = now;
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
         public async Task DeleteUserNotificationAsync(int userNotificationId)
         {
             var userId = _currentUserService.UserId;

@@ -9,6 +9,7 @@ namespace MyFinances.App.Abstractions
         Task<List<UserNotification>> GetUserInboxAsync(Guid userId);
         Task<UserNotification?> GetUserNotificationAsync(int userNotificationId, Guid userId);
         Task<List<Notification>> GetAllNotificationsAsync();
+        Task<List<UserNotification>> GetUnreadUserNotificationsAsync(Guid userId);
         Task<List<User>> GetAllUsersAsync();
         Task<List<User>> GetUsersByIdsAsync(List<Guid> userIds);
     }

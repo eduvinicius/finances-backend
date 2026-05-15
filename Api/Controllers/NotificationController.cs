@@ -29,6 +29,13 @@ namespace MyFinances.Api.Controllers
             return NoContent();
         }
 
+        [HttpPatch("read-all")]
+        public async Task<IActionResult> MarkAllAsRead()
+        {
+            await _notificationService.MarkAllAsReadAsync();
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserNotification(int id)
         {
