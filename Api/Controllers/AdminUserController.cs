@@ -10,6 +10,13 @@ namespace MyFinances.Api.Controllers
     {
         private readonly IAdminUserService _adminUserService = adminUserService;
 
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchUsers([FromQuery] string? name)
+        {
+            var result = await _adminUserService.SearchUsersByNameAsync(name ?? string.Empty);
+            return Ok(result);
+        }
+
         [HttpPost("getAll")]
         public async Task<IActionResult> GetUsers([FromBody] AdminUserFilterDto filters)
         {

@@ -33,6 +33,15 @@ namespace MyFinances.App.Services.Admin
             };
         }
 
+        public async Task<IReadOnlyCollection<UserSearchResultResponseDto>> SearchUsersByNameAsync(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return [];
+
+            var users = await _userRepo.SearchByNameAsync(name.Trim(), limit: 20);
+            return _mapper.Map<IReadOnlyCollection<UserSearchResultResponseDto>>(users);
+        }
+
         public async Task<AdminUserDetailResponseDto> GetUserByIdAsync(Guid userId)
         {
             var user = await _userRepo.GetByIdAsync(userId)

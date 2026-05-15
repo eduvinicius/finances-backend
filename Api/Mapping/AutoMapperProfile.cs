@@ -66,6 +66,8 @@ namespace MyFinances.Api.Mapping
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()))
                 .ForMember(dest => dest.LastLogin, opt => opt.MapFrom(src => src.LastLoginAt));
 
+            CreateMap<User, UserSearchResultResponseDto>();
+
             CreateMap<Notification, NotificationResponseDto>()
                 .ForMember(dest => dest.TargetingMode, opt => opt.MapFrom(src => src.TargetingMode.ToString()))
                 .ForMember(dest => dest.DeliveryChannel, opt => opt.MapFrom(src => src.DeliveryChannel.ToString()));

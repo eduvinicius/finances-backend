@@ -30,18 +30,38 @@ namespace MyFinances.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IReadOnlyCollection<User>> SearchByNameAsync(string name, int limit)
+        {
+            var safe = name.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+            return await _dbSet
+                .AsNoTracking()
+                .Where(u => u.IsActive && EF.Functions.ILike(u.FullName, $"%{safe}%", "\\"))
+                .OrderBy(u => u.FullName)
+                .Take(limit)
+                .ToListAsync();
+        }
+
         public async Task<PagedResultBase<User>> GetAllFilteredAsync(AdminUserFilterDto filters, Guid excludeUserId)
         {
             var query = _dbSet.Where(u => u.Id != excludeUserId);
 
             if (!string.IsNullOrWhiteSpace(filters.FullName))
-                query = query.Where(u => EF.Functions.ILike(u.FullName, $"%{filters.FullName}%"));
+            {
+                var safe = filters.FullName.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+                query = query.Where(u => EF.Functions.ILike(u.FullName, $"%{safe}%", "\\"));
+            }
 
             if (!string.IsNullOrWhiteSpace(filters.Nickname))
-                query = query.Where(u => u.Nickname != null && EF.Functions.ILike(u.Nickname, $"%{filters.Nickname}%"));
+            {
+                var safe = filters.Nickname.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+                query = query.Where(u => u.Nickname != null && EF.Functions.ILike(u.Nickname, $"%{safe}%", "\\"));
+            }
 
             if (!string.IsNullOrWhiteSpace(filters.DocumentNumber))
-                query = query.Where(u => u.DocumentNumber != null && EF.Functions.ILike(u.DocumentNumber, $"%{filters.DocumentNumber}%"));
+            {
+                var safe = filters.DocumentNumber.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_");
+                query = query.Where(u => u.DocumentNumber != null && EF.Functions.ILike(u.DocumentNumber, $"%{safe}%", "\\"));
+            }
 
             if (filters.Role.HasValue)
                 query = query.Where(u => u.Role == filters.Role.Value);

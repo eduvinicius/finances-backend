@@ -10,5 +10,6 @@ namespace MyFinances.App.Abstractions
         Task<User?> GetByGoogleSubjectIdAsync(string googleSubjectId);
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<PagedResultBase<User>> GetAllFilteredAsync(AdminUserFilterDto filters, Guid excludeUserId);
+        Task<IReadOnlyCollection<User>> SearchByNameAsync(string name, int limit);
     }
 }
