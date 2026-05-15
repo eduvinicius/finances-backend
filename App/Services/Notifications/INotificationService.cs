@@ -1,16 +1,10 @@
 using MyFinances.Domain.Entities;
-using MyFinances.Domain.Enums;
 
 namespace MyFinances.App.Services.Notifications
 {
     public interface INotificationService
     {
-        Task CreateNotificationAsync(
-            string title,
-            string body,
-            NotificationTargetingMode targetingMode,
-            NotificationDeliveryChannel channel,
-            List<Guid>? targetUserIds);
+        Task CreateNotificationAsync(CreateNotificationRequest request);
 
         Task<List<UserNotification>> GetUserInboxAsync();
 

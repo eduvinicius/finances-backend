@@ -18,42 +18,48 @@ namespace MyFinances.App.Services.Notifications
         private readonly IEmailService _emailService = emailService;
         private readonly ILogger<NotificationService> _logger = logger;
 
-        public async Task CreateNotificationAsync(
-            string title,
-            string body,
-            NotificationTargetingMode targetingMode,
-            NotificationDeliveryChannel channel,
-            List<Guid>? targetUserIds)
+        public async Task CreateNotificationAsync(CreateNotificationRequest request)
         {
-            if (targetingMode is NotificationTargetingMode.SingleUser or NotificationTargetingMode.SelectedUsers
-                && (targetUserIds is null || targetUserIds.Count == 0))
+            if (request.TargetingMode is NotificationTargetingMode.SingleUser or NotificationTargetingMode.SelectedUsers
+                && (request.TargetUserIds is null || request.TargetUserIds.Count == 0))
             {
                 throw new BadRequestException("É necessário informar ao menos um usuário destinatário para o modo de targeting selecionado.");
             }
 
-            if (targetingMode == NotificationTargetingMode.SingleUser && targetUserIds!.Count != 1)
+            if (request.TargetingMode == NotificationTargetingMode.SingleUser && request.TargetUserIds!.Count != 1)
                 throw new BadRequestException("SingleUser targeting mode requires exactly one target user ID.");
 
             var notification = new Notification
             {
-                Title = title,
-                Body = body,
-                TargetingMode = targetingMode,
-                DeliveryChannel = channel,
+                Title = request.Title,
+                Body = request.Body,
+                TargetingMode = request.TargetingMode,
+                DeliveryChannel = request.DeliveryChannel,
                 CreatedAt = DateTime.UtcNow
             };
 
             await _notificationRepo.AddNotificationAsync(notification);
 
-            var expiresAt = DateTime.UtcNow.AddDays(30);
+            var recipients = await FanOutUserNotificationsAsync(notification, request.TargetingMode, request.TargetUserIds);
 
-            List<User>? targetedUsers = null;
+            await _unitOfWork.SaveChangesAsync();
+
+            if (request.DeliveryChannel is NotificationDeliveryChannel.Email or NotificationDeliveryChannel.Both)
+                await SendEmailNotificationsAsync(recipients, request.Title, request.Body);
+        }
+
+        private async Task<List<User>> FanOutUserNotificationsAsync(
+            Notification notification,
+            NotificationTargetingMode targetingMode,
+            List<Guid>? targetUserIds)
+        {
+            var expiresAt = DateTime.UtcNow.AddDays(30);
 
             switch (targetingMode)
             {
                 case NotificationTargetingMode.AllUsers:
-                    targetedUsers = await _notificationRepo.GetAllUsersAsync();
-                    foreach (var user in targetedUsers)
+                    var allUsers = await _notificationRepo.GetAllUsersAsync();
+                    foreach (var user in allUsers)
                     {
                         await _notificationRepo.AddUserNotificationAsync(new UserNotification
                         {
@@ -62,7 +68,7 @@ namespace MyFinances.App.Services.Notifications
                             ExpiresAt = expiresAt
                         });
                     }
-                    break;
+                    return allUsers;
 
                 case NotificationTargetingMode.SingleUser:
                     await _notificationRepo.AddUserNotificationAsync(new UserNotification
@@ -71,7 +77,7 @@ namespace MyFinances.App.Services.Notifications
                         UserId = targetUserIds![0],
                         ExpiresAt = expiresAt
                     });
-                    break;
+                    return await _notificationRepo.GetUsersByIdsAsync(targetUserIds);
 
                 case NotificationTargetingMode.SelectedUsers:
                     foreach (var userId in targetUserIds!)
@@ -83,33 +89,24 @@ namespace MyFinances.App.Services.Notifications
                             ExpiresAt = expiresAt
                         });
                     }
-                    break;
+                    return await _notificationRepo.GetUsersByIdsAsync(targetUserIds);
+
+                default:
+                    throw new BadRequestException($"Unsupported targeting mode: {targetingMode}.");
             }
+        }
 
-            await _unitOfWork.SaveChangesAsync();
-
-            if (channel is NotificationDeliveryChannel.Email or NotificationDeliveryChannel.Both)
+        private async Task SendEmailNotificationsAsync(List<User> recipients, string title, string body)
+        {
+            foreach (var recipient in recipients)
             {
-                if (targetingMode == NotificationTargetingMode.AllUsers)
+                try
                 {
-                    // targetedUsers was already fetched during fan-out — reuse it
+                    await _emailService.SendEmailAsync(recipient.Email, recipient.FullName, title, body);
                 }
-                else
+                catch (Exception ex)
                 {
-                    // Fetch the targeted users to obtain their email addresses
-                    targetedUsers = await _notificationRepo.GetUsersByIdsAsync(targetUserIds!);
-                }
-
-                foreach (var recipient in targetedUsers ?? [])
-                {
-                    try
-                    {
-                        await _emailService.SendEmailAsync(recipient.Email, recipient.FullName, title, body);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Failed to send notification email to {Email} (UserId: {UserId})", recipient.Email, recipient.Id);
-                    }
+                    _logger.LogError(ex, "Failed to send notification email to {Email} (UserId: {UserId})", recipient.Email, recipient.Id);
                 }
             }
         }

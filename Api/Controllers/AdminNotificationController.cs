@@ -17,12 +17,14 @@ namespace MyFinances.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateNotification([FromBody] CreateNotificationDto dto)
         {
-            await _notificationService.CreateNotificationAsync(
+            var request = new CreateNotificationRequest(
                 dto.Title,
                 dto.Body,
                 dto.TargetingMode,
                 dto.DeliveryChannel,
                 dto.TargetUserIds);
+
+            await _notificationService.CreateNotificationAsync(request);
 
             return Ok();
         }
